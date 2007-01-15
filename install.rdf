@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	 xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+	<Description about="urn:mozilla:install-manifest">
+
+		<em:id>{4C65E837-7234-4b19-BBC4-A48C08346004}</em:id>
+
+		<em:version>1.0.2005012901</em:version>
+
+
+		<em:targetApplication>
+			<Description><!-- Firefox -->
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>0.8</em:minVersion>
+				<em:maxVersion>1.5.0.*</em:maxVersion>
+			</Description>
+			<Description><!-- Mozilla Suite -->
+				<em:id>{86c18b42-e466-45a9-ae7a-9b95ba6f5640}</em:id>
+				<em:minVersion>1.0</em:minVersion>
+				<em:maxVersion>1.8</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+
+		<em:name>Tab Killer</em:name>
+		<em:description>Disables tabbed browsing features of Mozilla completely.</em:description>
+		<em:creator>SHIMODA Hiroshi</em:creator>
+		<em:contributor>Jean-Bernard Marcon</em:contributor>
+		<em:homepageURL>http://piro.sakura.ne.jp/xul/_tabkiller.html.en</em:homepageURL>
+		<em:updateURL>http://piro.sakura.ne.jp/xul/xul.rdf.en</em:updateURL>
+
+
+		<em:optionsURL>chrome://tabkiller/content/prefDialog.xul</em:optionsURL>
+		<!--em:aboutURL>chrome://tabkiller/content/prefDialog.xul</em:aboutURL-->
+		<!--em:iconURL></em:iconURL-->
+
+
+		<em:file>
+			<Description about="urn:mozilla:extension:file:tabkiller.jar">
+				<em:package>content/tabkiller/</em:package>
+				<em:locale>locale/en-US/tabkiller/</em:locale>
+				<em:locale>locale/ja-JP/tabkiller/</em:locale>
+				<em:locale>locale/fr-FR/tabkiller/</em:locale>
+			</Description>
+		</em:file>
+	</Description>
+</RDF>
