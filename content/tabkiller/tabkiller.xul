@@ -1,40 +1,5 @@
 <?xml version="1.0"?>
 
-<!-- ***** BEGIN LICENSE BLOCK *****
-   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
-   -
-   - The contents of this file are subject to the Mozilla Public License Version
-   - 1.1 (the "License"); you may not use this file except in compliance with
-   - the License. You may obtain a copy of the License at
-   - http://www.mozilla.org/MPL/
-   -
-   - Software distributed under the License is distributed on an "AS IS" basis,
-   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
-   - for the specific language governing rights and limitations under the
-   - License.
-   -
-   - The Original Code is the Tab Killer.
-   -
-   - The Initial Developer of the Original Code is SHIMODA Hiroshi.
-   - Portions created by the Initial Developer are Copyright (C) 2004-2005
-   - the Initial Developer. All Rights Reserved.
-   -
-   - Contributor(s): SHIMODA Hiroshi <piro@p.club.ne.jp>
-   -
-   - Alternatively, the contents of this file may be used under the terms of
-   - either the GNU General Public License Version 2 or later (the "GPL"), or
-   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
-   - in which case the provisions of the GPL or the LGPL are applicable instead
-   - of those above. If you wish to allow use of your version of this file only
-   - under the terms of either the GPL or the LGPL, and not to allow others to
-   - use your version of this file under the terms of the MPL, indicate your
-   - decision by deleting the provisions above and replace them with the notice
-   - and other provisions required by the LGPL or the GPL. If you do not delete
-   - the provisions above, a recipient may use your version of this file under
-   - the terms of any one of the MPL, the GPL or the LGPL.
-   -
-   - ***** END LICENSE BLOCK ***** -->
-
 <?xml-stylesheet href="chrome://tabkiller/content/tabkiller.css" type="text/css"?>
 <?xml-stylesheet href="chrome://tabkiller/locale/tabkiller.css" type="text/css"?>
 
@@ -64,13 +29,6 @@ function killTabbrowser()
 
 	document.documentElement.setAttribute('tabkiller-enabled', true);
 
-	try {
-		var openWindow = b.mPrefs.getBoolPref('tabkiller.openWindowInsteadOfTab');
-	}
-	catch(e) {
-		b.mPrefs.setBoolPref('tabkiller.openWindowInsteadOfTab', false);
-	}
-
 
 	for (var i = 0; i < b.mTabContainer.childNodes.length; i++)
 		if (b.mTabContainer.childNodes[i] != b.selectedTab)
@@ -79,15 +37,22 @@ function killTabbrowser()
 	b.mStrip.collapsed = true;
 	b.mStrip.hidden    = true;
 
+	var originalAddTab    = b.addTab;
+	var originalRemoveTab = b.removeTab;
+
 	b.addTab = function(aURI, aReferrer, aCharset)
 	{
+		if (window.__tabkiller__tempDisabled) {
+			return originalAddTab.apply(this, arguments);
+		}
+
 		var browserURI = location.href;
 		var openWindow;
 		try {
 			openWindow = this.mPrefs.getBoolPref('tabkiller.openWindowInsteadOfTab');
 		}
 		catch(e) {
-			openWindow = false;
+			openWindow = true;
 		}
 
 		if (
@@ -112,9 +77,68 @@ function killTabbrowser()
 		}
 		return this.selectedTab;
 	};
-	b.removeTab = function(aTab) {};
+
+	b.removeTab = function(aTab) {
+		if (window.__tabkiller__tempDisabled) {
+			return originalRemoveTab.apply(this, arguments);
+		}
+
+		var closeWindow;
+		try {
+			closeWindow = this.mPrefs.getBoolPref('tabkiller.closeWindowInsteadOfTab');
+		}
+		catch(e) {
+			closeWindow = true;
+		}
+		if (closeWindow) {
+			if ('TryToCloseWindow' in window)
+				window.TryToCloseWindow();
+			else if ('TryToCloseBrowserWindow' in window)
+				window.TryToCloseBrowserWindow();
+			else
+				window.close();
+		}
+		return aTab;
+	};
 	b.setStripVisibilityTo = function(aShow) {};
 	b.getStripVisibility = function() { return false; }
+
+
+	b.removeAllTabsButWithoutUndoCache = function(aTab)
+	{
+		var undoNum;
+		try {
+			undoNum = this.mPrefs.getIntPref('sessionstore.max_tabs_undo');
+		}
+		catch(e) {
+			undoNum = 10;
+		}
+		this.mPrefs.setIntPref('sessionstore.max_tabs_undo', 0);
+		var retVal = this.removeAllTabsBut(aTab);
+		window.setTimeout(function() {
+			b.mPrefs.setIntPref('sessionstore.max_tabs_undo', undoNum);
+		}, 0);
+		return retVal;
+	};
+
+
+	if ('nsISessionStore' in Components.interfaces) {
+		eval(
+			'window.closeWindow = '+
+			window.closeWindow.toSource().replace(
+				/\{/i,
+				'{ window.__tabkiller__addWindowToUndoCache();'
+			)
+		);
+		eval(
+			'window.undoCloseTab = '+
+			window.undoCloseTab.toSource().replace(
+				/ss.undoCloseTab\(/i,
+				'window.__tabkiller__restoreWindowFromUndoCache('
+			)
+		);
+	}
+
 
 	if ('TabbrowserService' in window) {
 		b.__tabextensions__addTab = b.addTab;
@@ -124,6 +148,99 @@ function killTabbrowser()
 
 	b.__tabkiller__initialized = true;
 }
+
+
+
+function __tabkiller__disable()
+{
+	window.__tabkiller__tempDisabled = true;
+	gBrowser.mStrip.collapsed = false;
+	gBrowser.mStrip.hidden    = false;
+};
+
+function __tabkiller__enable()
+{
+	window.__tabkiller__tempDisabled = false;
+	window.setTimeout(function() {
+		gBrowser.mStrip.collapsed = true;
+		gBrowser.mStrip.hidden    = true;
+	}, 0);
+};
+
+
+function __tabkiller__addWindowToUndoCache()
+{
+	const WindowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(Components.interfaces.nsIWindowMediator);
+	var targets = WindowManager.getEnumerator('navigator:browser', true),
+		target,
+		windows = [];
+	while (targets.hasMoreElements())
+	{
+		target = targets.getNext().QueryInterface(Components.interfaces.nsIDOMWindowInternal);
+		if (target != window)
+			windows.push(target);
+	}
+
+	if (!windows.length) return;
+
+	const SS = Components.classes['@mozilla.org/browser/sessionstore;1']
+				.getService(Components.interfaces.nsISessionStore);
+	var state = SS.getWindowState(window);
+	var title = gBrowser.selectedTab.getAttribute('label');
+
+	var current;
+	for (var i = 0; i < windows.length; i++)
+	{
+		windows[i].__tabkiller__disable();
+
+		current = windows[i].gBrowser.selectedTab;
+		SS.setWindowState(windows[i], state, false);
+
+		var tabs = windows[i].gBrowser.mTabContainer.childNodes;
+		for (var j = 0, maxj = tabs.length; j < maxj; j++)
+			if (tabs[j] != current) tabs[j].setAttribute('label', title);
+
+		windows[i].gBrowser.removeAllTabsBut(current);
+
+		windows[i].__tabkiller__enable();
+	}
+}
+
+function __tabkiller__restoreWindowFromUndoCache(aWindow, aIndex)
+{
+	__tabkiller__disable();
+
+	const SS = Components.classes['@mozilla.org/browser/sessionstore;1']
+				.getService(Components.interfaces.nsISessionStore);
+	var current = gBrowser.selectedTab;
+
+	SS.undoCloseTab(aWindow, aIndex);
+	var state = SS.getWindowState(window);
+
+	var tabs = gBrowser.mTabContainer.childNodes;
+	for (var i = 0, maxi = tabs.length; i < maxi; i++)
+		if (tabs[i] != current) break;
+
+	if (tabs[i]) {
+		var newWin = window.openDialog(location.href, '_blank', 'chrome,all,dialog=no', 'about:blank');
+		newWin.addEventListener('load', function() {
+			newWin.setTimeout(function() {
+				newWin.__tabkiller__disable();
+				var offset = newWin.gBrowser.mTabContainer.childNodes.length;
+				SS.setWindowState(newWin, state, false);
+				newWin.gBrowser.mTabContainer.childNodes[offset].setAttribute('label', current.getAttribute('label'));
+				newWin.gBrowser.removeAllTabsButWithoutUndoCache(newWin.gBrowser.mTabContainer.childNodes[i+offset]);
+				newWin.__tabkiller__enable();
+			}, 0);
+		}, false);
+	}
+	gBrowser.removeAllTabsButWithoutUndoCache(current);
+
+	__tabkiller__enable();
+}
+
+
+
 
 window.addEventListener('load', killTabbrowser, false);
 window.addEventListener('load', killTabbrowser, false);

@@ -39,6 +39,7 @@
 
 <!ENTITY tabkiller.disabled "Désactiver Tab Killer (nécessite un redémarrage)">
 <!ENTITY tabkiller.openWindowInsteadOfTab "Ouvrir de nouvelles fenêtres et non de nouveaux onglets">
+<!ENTITY tabkiller.closeWindowInsteadOfTab "Close window instead of tab">
 
 <!ENTITY tabkiller.about.title       "À propos de Tab Killer">
 <!ENTITY tabkiller.about.name_before "Tab Killer version">
