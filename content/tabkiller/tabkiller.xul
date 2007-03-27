@@ -211,12 +211,12 @@ function __tabkiller__restoreWindowFromUndoCache(aWindow, aIndex)
 				var offset = newWin.gBrowser.mTabContainer.childNodes.length;
 				SS.setWindowState(newWin, state, false);
 				newWin.gBrowser.mTabContainer.childNodes[offset].setAttribute('label', current.getAttribute('label'));
-				newWin.gBrowser.removeAllTabs(newWin.gBrowser.mTabContainer.childNodes[i+offset]);
+				newWin.gBrowser.removeAllTabsBut(newWin.gBrowser.mTabContainer.childNodes[i+offset]);
 				newWin.__tabkiller__enable();
 			}, 0);
 		}, false);
 	}
-	gBrowser.removeAllTabs(current);
+	gBrowser.removeAllTabsBut(current);
 
 	__tabkiller__enable();
 }
