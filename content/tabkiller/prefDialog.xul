@@ -4,8 +4,6 @@
 <?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
 
 <!DOCTYPE dialog [
-<!ENTITY % versionDTD SYSTEM "chrome://tabkiller/content/_version.dtd">
-%versionDTD;
 <!ENTITY % tabkillerDTD SYSTEM "chrome://tabkiller/locale/">
 %tabkillerDTD;
 ]>
@@ -20,10 +18,7 @@
 		orient="vertical"
 		onload="init();">
 
-<script type="application/x-javascript" src="chrome://tabkiller/content/exUnregisterer.js"/>
 <script type="application/x-javascript"><![CDATA[
-
-const ID = '{4C65E837-7234-4b19-BBC4-A48C08346004}';
 
 	var pref;
 
@@ -85,50 +80,6 @@ const ID = '{4C65E837-7234-4b19-BBC4-A48C08346004}';
 		window.close();
 	}
 
-
-
-	if (Components.classes['@mozilla.org/appshell/window-mediator;1'])
-		var WINMAN = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(Components.interfaces.nsIWindowMediator);
-	else
-		var WINMAN = Components.classes['@mozilla.org/rdf/datasource;1?name=window-mediator'].getService(Components.interfaces.nsIWindowMediator);
-	function opener()
-	{
-		return WINMAN.getMostRecentWindow('navigator:browser');
-	}
-
-	function loadURI(uri)
-	{
-		if (opener()) opener().loadURI(uri);
-		else window.open(uri);
-	}
-
-	var unreg = new exUnregisterer(
-		'chrome://tabkiller/content/contents.rdf',
-		'jar:%chromeFolder%tabkiller.jar!/locale/en-US/tabkiller/contents.rdf',
-		'jar:%chromeFolder%tabkiller.jar!/locale/ja-JP/tabkiller/contents.rdf'
-	);
-	var STRBUNDLE = Components.classes['@mozilla.org/intl/stringbundle;1'].getService(Components.interfaces.nsIStringBundleService);
-	var msg = STRBUNDLE.createBundle('chrome://tabkiller/locale/tabkiller.properties');
-
-	function Unregister()
-	{
-		if (!confirm(msg.GetStringFromName('uninstall_confirm'))) return;
-
-		if (!confirm(msg.GetStringFromName('uninstall_prefs_confirm'))) {
-			window.unreg.removePrefs('tabkiller');
-		}
-
-		window.unreg.unregister();
-
-		alert(
-			msg.GetStringFromName('uninstall_removefile').replace(/%S/i,
-				window.unreg.getFilePathFromURLSpec(
-					(window.unreg.exists(window.unreg.UChrome+'tabkiller.jar') ? window.unreg.UChrome+'tabkiller.jar' : window.unreg.Chrome+'tabkiller.jar' )
-				)
-			)
-		);
-	}
-
 ]]></script>
 
 <box orient="vertical">
@@ -141,31 +92,6 @@ const ID = '{4C65E837-7234-4b19-BBC4-A48C08346004}';
 			id="openWindowInsteadOfTab"/>
 		<checkbox label="&tabkiller.closeWindowInsteadOfTab;"
 			id="closeWindowInsteadOfTab"/>
-	</groupbox>
-
-	<separator/>
-
-	<groupbox orient="vertical">
-		<caption label="&tabkiller.about.title;"/>
-		<box orient="horizontal">
-			<spacer flex="1"/>
-			<description value="&tabkiller.about.name_before;&tabkiller.version;&tabkiller.about.name_after;"/>
-			<spacer flex="1"/>
-		</box>
-		<box orient="horizontal">
-			<spacer flex="1"/>
-			<description value="&tabkiller.about.destributed;"
-				onclick="loadURI('http://piro.sakura.ne.jp/');"
-				class="text-link"/>
-			<spacer flex="1"/>
-		</box>
-		<box orient="horizontal" id="uninstallBox">
-			<spacer flex="2"/>
-			<button flex="1"
-				label="&tabkiller.about.uninstall;"
-				oncommand="Unregister();"/>
-			<spacer flex="2"/>
-		</box>
 	</groupbox>
 </box>
 

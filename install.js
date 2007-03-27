@@ -1,4 +1,4 @@
-var version     = '1.0.2005012901',
+var version     = '1.1.2007032801',
 	displayName = 'Tab Killer',
 	appName     = 'tabkiller',
 	author      = 'SHIMODA Hiroshi',

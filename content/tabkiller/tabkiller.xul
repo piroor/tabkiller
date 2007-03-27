@@ -105,20 +105,41 @@ function killTabbrowser()
 
 
 	if ('nsISessionStore' in Components.interfaces) {
-		eval(
-			'window.closeWindow = '+
-			window.closeWindow.toSource().replace(
-				/\{/i,
-				'{ window.__tabkiller__addWindowToUndoCache();'
-			)
-		);
-		eval(
-			'window.undoCloseTab = '+
-			window.undoCloseTab.toSource().replace(
-				/ss.undoCloseTab\(/i,
-				'window.__tabkiller__restoreWindowFromUndoCache('
-			)
-		);
+		if (window.closeWindow)
+			eval(
+				'window.closeWindow = '+
+				window.closeWindow.toSource().replace(
+					/\{/i,
+					'{ window.__tabkiller__addWindowToUndoCache();'
+				)
+			);
+
+		if (window.undoCloseTab)
+			eval(
+				'window.undoCloseTab = '+
+				window.undoCloseTab.toSource().replace(
+					/ss.undoCloseTab\(/i,
+					'window.__tabkiller__restoreWindowFromUndoCache('
+				)
+			);
+
+		// 「すべてタブで開く」の項目を消す
+		if (window.HistoryMenu &&
+			window.HistoryMenu.populateUndoSubmenu)
+			eval(
+				'window.HistoryMenu.populateUndoSubmenu = '+
+				window.HistoryMenu.populateUndoSubmenu.toSource().replace(
+					/undoPopup.appendChild\(document.createElement\("menuseparator"\)\);/i,
+					'return;'
+				)
+			);
+
+		var menu = document.getElementById('historyUndoMenu');
+		if (menu) {
+			const STRBUNDLE = Components.classes['@mozilla.org/intl/stringbundle;1'].getService(Components.interfaces.nsIStringBundleService);
+			var msg = STRBUNDLE.createBundle('chrome://tabkiller/locale/tabkiller.properties');
+			menu.setAttribute('label', msg.GetStringFromName('undo_close_window'));
+		}
 	}
 
 
@@ -138,6 +159,9 @@ function __tabkiller__disable()
 	window.__tabkiller__tempDisabled = true;
 	gBrowser.mStrip.collapsed = false;
 	gBrowser.mStrip.hidden    = false;
+	gBrowser.mStrip.ordinal   = 65000;
+	gBrowser.mStrip.style.overflow  = 'hidden !important';
+	gBrowser.mStrip.style.maxHeight = '0 !important';
 };
 
 function __tabkiller__enable()
@@ -200,25 +224,68 @@ function __tabkiller__restoreWindowFromUndoCache(aWindow, aIndex)
 	var state = SS.getWindowState(window);
 
 	var tabs = gBrowser.mTabContainer.childNodes;
+	var index = -1;
 	for (var i = 0, maxi = tabs.length; i < maxi; i++)
-		if (tabs[i] != current) break;
-
-	if (tabs[i]) {
-		var newWin = window.openDialog(location.href, '_blank', 'chrome,all,dialog=no', 'about:blank');
-		newWin.addEventListener('load', function() {
-			newWin.setTimeout(function() {
-				newWin.__tabkiller__disable();
-				var offset = newWin.gBrowser.mTabContainer.childNodes.length;
-				SS.setWindowState(newWin, state, false);
-				newWin.gBrowser.mTabContainer.childNodes[offset].setAttribute('label', current.getAttribute('label'));
-				newWin.gBrowser.removeAllTabsBut(newWin.gBrowser.mTabContainer.childNodes[i+offset]);
-				newWin.__tabkiller__enable();
-			}, 0);
-		}, false);
+	{
+		if (index < 0 && tabs[i] != current) {
+			index = i;
+			/*
+				セッションヒストリの項目数が1で且つlocationがabout:blankの時、
+				nsISessionStoreはそのタブを履歴に残さない。
+				つまり、これを逆手に取れば、「閉じたタブ」の履歴に残さずに
+				タブを閉じることが出来るというわけ。
+			*/
+			tabs[i].linkedBrowser.contentWindow.location.replace('about:blank');
+			break;
+		}
 	}
-	gBrowser.removeAllTabsBut(current);
+	window.setTimeout(function() {
+		gBrowser.removeAllTabsBut(current);
+		__tabkiller__enable();
+		delete current;
+	}, 0);
 
-	__tabkiller__enable();
+	if (index < 0) return;
+
+	var newWin = window.openDialog(location.href, '_blank', 'chrome,all,dialog=no', 'about:blank');
+	newWin.addEventListener('load', function() {
+		newWin.setTimeout(function() {
+			newWin.__tabkiller__disable();
+
+			index += newWin.gBrowser.mTabContainer.childNodes.length;
+			SS.setWindowState(newWin, state, false);
+			delete state;
+
+			var tabs = newWin.gBrowser.mTabContainer.childNodes;
+			newWin.gBrowser.selectedTab = tabs[index];
+			newWin.focus();
+
+			window.setTimeout(function() {
+				for (var i = 0, maxi = tabs.length; i < maxi; i++)
+				{
+					if (i != index) {
+						/*
+							このタブは元のウィンドウのタブの複製で、セッションヒストリに
+							複数の項目を含んでいる可能性がある。
+							なので、セッションヒストリをすべて消してから閉じる。
+						*/
+						if (tabs[i].linkedBrowser.sessionHistory)
+							tabs[i].linkedBrowser.sessionHistory.PurgeHistory(tabs[i].linkedBrowser.sessionHistory.count);
+						tabs[i].linkedBrowser.contentWindow.location.replace('about:blank');
+					}
+				}
+				window.setTimeout(function() {
+					newWin.gBrowser.removeAllTabsBut(newWin.gBrowser.mTabContainer.childNodes[index]);
+					newWin.__tabkiller__enable();
+
+					delete i;
+					delete index;
+					delete tabs;
+					delete newWin;
+				}, 0);
+			}, 0);
+		}, 0);
+	}, false);
 }
 
 

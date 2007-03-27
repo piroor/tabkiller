@@ -5,13 +5,13 @@
 
 		<em:id>{4C65E837-7234-4b19-BBC4-A48C08346004}</em:id>
 
-		<em:version>1.0.2005012901</em:version>
+		<em:version>1.1.2007032801</em:version>
 
 
 		<em:targetApplication>
 			<Description><!-- Firefox -->
 				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-				<em:minVersion>0.8</em:minVersion>
+				<em:minVersion>1.0</em:minVersion>
 				<em:maxVersion>2.0.0.*</em:maxVersion>
 			</Description>
 			<Description><!-- Mozilla Suite -->
