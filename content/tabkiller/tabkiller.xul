@@ -104,24 +104,6 @@ function killTabbrowser()
 	b.getStripVisibility = function() { return false; }
 
 
-	b.removeAllTabsButWithoutUndoCache = function(aTab)
-	{
-		var undoNum;
-		try {
-			undoNum = this.mPrefs.getIntPref('sessionstore.max_tabs_undo');
-		}
-		catch(e) {
-			undoNum = 10;
-		}
-		this.mPrefs.setIntPref('sessionstore.max_tabs_undo', 0);
-		var retVal = this.removeAllTabsBut(aTab);
-		window.setTimeout(function() {
-			b.mPrefs.setIntPref('sessionstore.max_tabs_undo', undoNum);
-		}, 0);
-		return retVal;
-	};
-
-
 	if ('nsISessionStore' in Components.interfaces) {
 		eval(
 			'window.closeWindow = '+
@@ -229,12 +211,12 @@ function __tabkiller__restoreWindowFromUndoCache(aWindow, aIndex)
 				var offset = newWin.gBrowser.mTabContainer.childNodes.length;
 				SS.setWindowState(newWin, state, false);
 				newWin.gBrowser.mTabContainer.childNodes[offset].setAttribute('label', current.getAttribute('label'));
-				newWin.gBrowser.removeAllTabsButWithoutUndoCache(newWin.gBrowser.mTabContainer.childNodes[i+offset]);
+				newWin.gBrowser.removeAllTabs(newWin.gBrowser.mTabContainer.childNodes[i+offset]);
 				newWin.__tabkiller__enable();
 			}, 0);
 		}, false);
 	}
-	gBrowser.removeAllTabsButWithoutUndoCache(current);
+	gBrowser.removeAllTabs(current);
 
 	__tabkiller__enable();
 }
