@@ -31,7 +31,7 @@
 
 		<em:optionsURL>chrome://tabkiller/content/prefDialog.xul</em:optionsURL>
 		<!--em:aboutURL>chrome://tabkiller/content/prefDialog.xul</em:aboutURL-->
-		<!--em:iconURL></em:iconURL-->
+		<em:iconURL>chrome://tabkiller/content/icon32.png</em:iconURL>
 
 
 		<em:file>
