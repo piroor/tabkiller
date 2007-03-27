@@ -195,6 +195,7 @@ function __tabkiller__addWindowToUndoCache()
 	var title = gBrowser.selectedTab.getAttribute('label');
 
 	var current;
+	var tabs;
 	for (var i = 0; i < windows.length; i++)
 	{
 		windows[i].__tabkiller__disable();
@@ -202,11 +203,14 @@ function __tabkiller__addWindowToUndoCache()
 		current = windows[i].gBrowser.selectedTab;
 		SS.setWindowState(windows[i], state, false);
 
-		var tabs = windows[i].gBrowser.mTabContainer.childNodes;
-		for (var j = 0, maxj = tabs.length; j < maxj; j++)
-			if (tabs[j] != current) tabs[j].setAttribute('label', title);
-
-		windows[i].gBrowser.removeAllTabsBut(current);
+		tabs = windows[i].gBrowser.mTabContainer.childNodes;
+		for (var j = tabs.length-1; j > -1; j--)
+		{
+			if (tabs[j] != current) {
+				tabs[j].setAttribute('label', title);
+				windows[i].gBrowser.removeTab(tabs[j]);
+			}
+		}
 
 		windows[i].__tabkiller__enable();
 	}
@@ -240,7 +244,12 @@ function __tabkiller__restoreWindowFromUndoCache(aWindow, aIndex)
 		}
 	}
 	window.setTimeout(function() {
-		gBrowser.removeAllTabsBut(current);
+		var tabs = gBrowser.mTabContainer.childNodes;
+		for (var i = tabs.length-1; i > -1; i--)
+		{
+			if (tabs[i] != current)
+				gBrowser.removeTab(tabs[i]);
+		}
 		__tabkiller__enable();
 		delete current;
 	}, 0);
@@ -275,10 +284,13 @@ function __tabkiller__restoreWindowFromUndoCache(aWindow, aIndex)
 					}
 				}
 				window.setTimeout(function() {
-					newWin.gBrowser.removeAllTabsBut(newWin.gBrowser.mTabContainer.childNodes[index]);
+					for (var i = tabs.length-1; i > -1; i--)
+					{
+						if (i != index)
+							newWin.gBrowser.removeTab(tabs[i]);
+					}
 					newWin.__tabkiller__enable();
 
-					delete i;
 					delete index;
 					delete tabs;
 					delete newWin;
