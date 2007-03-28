@@ -49,21 +49,6 @@
 		catch(e) {
 		}
 		document.getElementById('tabKillerDisabled').checked = disabled;
-
-
-		var box = document.getElementById('uninstallBox');
-		try {
-			const ExtensionManager = Components.classes['@mozilla.org/extensions/manager;1'].getService(Components.interfaces.nsIExtensionManager);
-			var item = ExtensionManager.getItemList(ID, Components.interfaces.nsIUpdateItem.TYPE_EXTENSION, {});
-
-			if (item && item[0] && item[0].version) {
-				box.setAttribute('hidden',true);
-				return;
-			}
-		}
-		catch(e) {
-		}
-		box.removeAttribute('hidden',true);
 	}
 
 	function apply()
