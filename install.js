@@ -103,6 +103,9 @@ else {
 				for (i = 0; i < installedOptions.length; i++)
 					registerChrome(localeFlag, folder, 'locale/ja-JP/'+installedOptions[i]+'/');
 			}
+
+			registerChrome(localeFlag, folder, 'locale/fr-FR/'+appName+'/');
+			registerChrome(localeFlag, folder, 'locale/pl-PL/'+appName+'/');
 		}
 
 		if ('hasSkin' in this && hasSkin) {

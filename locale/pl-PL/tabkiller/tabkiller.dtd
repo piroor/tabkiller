@@ -1,0 +1,13 @@
+<!ENTITY tabkiller.title                  "Tab Killer">
+<!ENTITY tabkiller.pref.title             "Konfiguracja Tab Killer">
+<!ENTITY tabkiller.group                  "Ogólne">
+
+<!ENTITY tabkiller.disabled "Deaktywuj Tab Killer (ponownie uruchom przeglądarkę)">
+<!ENTITY tabkiller.openWindowInsteadOfTab "Otwórz nowe okno zamiast nowej karty">
+<!ENTITY tabkiller.closeWindowInsteadOfTab "Zamknij okno zamiast karty">
+
+<!ENTITY tabkiller.about.title       "Tab Killer - informacje">
+<!ENTITY tabkiller.about.name_before "Tab Killer wer.">
+<!ENTITY tabkiller.about.name_after  "">
+<!ENTITY tabkiller.about.destributed "http://piro.sakura.ne.jp/">
+<!ENTITY tabkiller.about.uninstall   "Odinstaluj">

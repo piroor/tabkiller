@@ -1,0 +1,9 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+[tabkiller-enabled="true"] *[label*="Nowa karta"],
+[tabkiller-enabled="true"] *[label*="w karcie"],
+[tabkiller-enabled="true"] *[label*="z kartą"],
+[tabkiller-enabled="true"] *[label*="Zamknij panel"]
+{
+    display: none !important;
+}

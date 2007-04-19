@@ -40,6 +40,7 @@
 				<em:locale>locale/en-US/tabkiller/</em:locale>
 				<em:locale>locale/ja-JP/tabkiller/</em:locale>
 				<em:locale>locale/fr-FR/tabkiller/</em:locale>
+				<em:locale>locale/pl-PL/tabkiller/</em:locale>
 			</Description>
 		</em:file>
 	</Description>
