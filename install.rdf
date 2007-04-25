@@ -24,7 +24,8 @@
 		<em:name>Tab Killer</em:name>
 		<em:description>Disables tabbed browsing features of Mozilla completely.</em:description>
 		<em:creator>SHIMODA Hiroshi</em:creator>
-		<em:contributor>Jean-Bernard Marcon</em:contributor>
+		<em:translator>Jean-Bernard Marcon</em:translator>
+		<em:translator>Leszek (teo) Życzkowski</em:translator>
 		<em:homepageURL>http://piro.sakura.ne.jp/xul/_tabkiller.html.en</em:homepageURL>
 		<em:updateURL>http://piro.sakura.ne.jp/xul/xul.rdf.en</em:updateURL>
 
