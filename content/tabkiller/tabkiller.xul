@@ -37,13 +37,13 @@ function killTabbrowser()
 	b.mStrip.collapsed = true;
 	b.mStrip.hidden    = true;
 
-	var originalAddTab    = b.addTab;
-	var originalRemoveTab = b.removeTab;
+	b.__tabkiller__originalAddTab    = b.addTab;
+	b.__tabkiller__originalRemoveTab = b.removeTab;
 
 	b.addTab = function(aURI, aReferrer, aCharset)
 	{
 		if (window.__tabkiller__tempDisabled) {
-			return originalAddTab.apply(this, arguments);
+			return this.__tabkiller__originalAddTab.apply(this, arguments);
 		}
 
 		var browserURI = location.href;
@@ -80,7 +80,7 @@ function killTabbrowser()
 
 	b.removeTab = function(aTab) {
 		if (window.__tabkiller__tempDisabled) {
-			return originalRemoveTab.apply(this, arguments);
+			return this.__tabkiller__originalRemoveTab.apply(this, arguments);
 		}
 
 		var closeWindow;
