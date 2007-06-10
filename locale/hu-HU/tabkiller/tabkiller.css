@@ -1,0 +1,9 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+[tabkiller-enabled="true"] *[label*="New Tab"],
+[tabkiller-enabled="true"] *[label*="in Tab"],
+[tabkiller-enabled="true"] *[label*="with Tab"],
+[tabkiller-enabled="true"] *[label*="Close Tab"]
+{
+    display: none !important;
+}
