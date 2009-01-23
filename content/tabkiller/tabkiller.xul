@@ -7,6 +7,24 @@
 
 <script type="application/x-javascript"><![CDATA[
 
+
+function __tabkiller__getTabs(aTabBrowser)
+{
+	var tabs = aTabBrowser.ownerDocument.evaluate(
+			'descendant::*[local-name()="tab"]',
+			aTabBrowser.mTabContainer,
+			null,
+			XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+			null
+		);
+	var array = [];
+	for (var i = 0, maxi = tabs.snapshotLength; i < maxi)
+	{
+		array.push(tabs.snapshotItem(i));
+	}
+	return array;
+};
+
 function killTabbrowser()
 {
 	if ('TabbrowserService' in window && !TabbrowserService.initialized)
@@ -30,9 +48,12 @@ function killTabbrowser()
 	document.documentElement.setAttribute('tabkiller-enabled', true);
 
 
-	for (var i = 0; i < b.mTabContainer.childNodes.length; i++)
-		if (b.mTabContainer.childNodes[i] != b.selectedTab)
-			b.removeTab(b.mTabContainer.childNodes[i]);
+	var tabs = __tabkiller__getTabs(b);
+	for (var i = tabs.length-1; i > -1; i--)
+	{
+		if (tabs[i] != b.selectedTab)
+			b.removeTab(tabs[i]);
+	}
 
 	b.mStrip.collapsed = true;
 	b.mStrip.hidden    = true;
@@ -203,7 +224,7 @@ function __tabkiller__addWindowToUndoCache()
 		current = windows[i].gBrowser.selectedTab;
 		SS.setWindowState(windows[i], state, false);
 
-		tabs = windows[i].gBrowser.mTabContainer.childNodes;
+		tabs = __tabkiller__getTabs(windows[i].gBrowser);
 		for (var j = tabs.length-1; j > -1; j--)
 		{
 			if (tabs[j] != current) {
@@ -227,7 +248,7 @@ function __tabkiller__restoreWindowFromUndoCache(aWindow, aIndex)
 	SS.undoCloseTab(aWindow, aIndex);
 	var state = SS.getWindowState(window);
 
-	var tabs = gBrowser.mTabContainer.childNodes;
+	var tabs = __tabkiller__getTabs(gBrowser);
 	var index = -1;
 	for (var i = 0, maxi = tabs.length; i < maxi; i++)
 	{
@@ -244,7 +265,7 @@ function __tabkiller__restoreWindowFromUndoCache(aWindow, aIndex)
 		}
 	}
 	window.setTimeout(function() {
-		var tabs = gBrowser.mTabContainer.childNodes;
+		var tabs = __tabkiller__getTabs(gBrowser);
 		for (var i = tabs.length-1; i > -1; i--)
 		{
 			if (tabs[i] != current)
@@ -261,11 +282,11 @@ function __tabkiller__restoreWindowFromUndoCache(aWindow, aIndex)
 		newWin.setTimeout(function() {
 			newWin.__tabkiller__disable();
 
-			index += newWin.gBrowser.mTabContainer.childNodes.length;
+			index += __tabkiller__getTabs(newWin.gBrowser).length;
 			SS.setWindowState(newWin, state, false);
 			delete state;
 
-			var tabs = newWin.gBrowser.mTabContainer.childNodes;
+			var tabs = __tabkiller__getTabs(newWin.gBrowser);
 			newWin.gBrowser.selectedTab = tabs[index];
 			newWin.focus();
 
