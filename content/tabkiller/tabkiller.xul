@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="Shift_JIS"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <?xml-stylesheet href="chrome://tabkiller/content/tabkiller.css" type="text/css"?>
 <?xml-stylesheet href="chrome://tabkiller/locale/tabkiller.css" type="text/css"?>
@@ -144,7 +144,7 @@ function killTabbrowser()
 				)
 			);
 
-		// u‚·‚×‚Äƒ^ƒu‚ÅŠJ‚­v‚Ì€–Ú‚ğÁ‚·
+		// ã€Œã™ã¹ã¦ã‚¿ãƒ–ã§é–‹ãã€ã®é …ç›®ã‚’æ¶ˆã™
 		if (window.HistoryMenu &&
 			window.HistoryMenu.populateUndoSubmenu)
 			eval(
@@ -255,10 +255,10 @@ function __tabkiller__restoreWindowFromUndoCache(aWindow, aIndex)
 		if (index < 0 && tabs[i] != current) {
 			index = i;
 			/*
-				ƒZƒbƒVƒ‡ƒ“ƒqƒXƒgƒŠ‚Ì€–Ú”‚ª1‚ÅŠ‚Âlocation‚ªabout:blank‚ÌA
-				nsISessionStore‚Í‚»‚Ìƒ^ƒu‚ğ—š—ğ‚Éc‚³‚È‚¢B
-				‚Â‚Ü‚èA‚±‚ê‚ğ‹tè‚Éæ‚ê‚ÎAu•Â‚¶‚½ƒ^ƒuv‚Ì—š—ğ‚Éc‚³‚¸‚É
-				ƒ^ƒu‚ğ•Â‚¶‚é‚±‚Æ‚ªo—ˆ‚é‚Æ‚¢‚¤‚í‚¯B
+				ã‚»ãƒƒã‚·ãƒ§ãƒ³ãƒ’ã‚¹ãƒˆãƒªã®é …ç›®æ•°ãŒ1ã§ä¸”ã¤locationãŒabout:blankã®æ™‚ã€
+				nsISessionStoreã¯ãã®ã‚¿ãƒ–ã‚’å±¥æ­´ã«æ®‹ã•ãªã„ã€‚
+				ã¤ã¾ã‚Šã€ã“ã‚Œã‚’é€†æ‰‹ã«å–ã‚Œã°ã€ã€Œé–‰ã˜ãŸã‚¿ãƒ–ã€ã®å±¥æ­´ã«æ®‹ã•ãšã«
+				ã‚¿ãƒ–ã‚’é–‰ã˜ã‚‹ã“ã¨ãŒå‡ºæ¥ã‚‹ã¨ã„ã†ã‚ã‘ã€‚
 			*/
 			tabs[i].linkedBrowser.contentWindow.location.replace('about:blank');
 			break;
@@ -295,9 +295,9 @@ function __tabkiller__restoreWindowFromUndoCache(aWindow, aIndex)
 				{
 					if (i != index) {
 						/*
-							‚±‚Ìƒ^ƒu‚ÍŒ³‚ÌƒEƒBƒ“ƒhƒE‚Ìƒ^ƒu‚Ì•¡»‚ÅAƒZƒbƒVƒ‡ƒ“ƒqƒXƒgƒŠ‚É
-							•¡”‚Ì€–Ú‚ğŠÜ‚ñ‚Å‚¢‚é‰Â”\«‚ª‚ ‚éB
-							‚È‚Ì‚ÅAƒZƒbƒVƒ‡ƒ“ƒqƒXƒgƒŠ‚ğ‚·‚×‚ÄÁ‚µ‚Ä‚©‚ç•Â‚¶‚éB
+							ã“ã®ã‚¿ãƒ–ã¯å…ƒã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ã‚¿ãƒ–ã®è¤‡è£½ã§ã€ã‚»ãƒƒã‚·ãƒ§ãƒ³ãƒ’ã‚¹ãƒˆãƒªã«
+							è¤‡æ•°ã®é …ç›®ã‚’å«ã‚“ã§ã„ã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ã€‚
+							ãªã®ã§ã€ã‚»ãƒƒã‚·ãƒ§ãƒ³ãƒ’ã‚¹ãƒˆãƒªã‚’ã™ã¹ã¦æ¶ˆã—ã¦ã‹ã‚‰é–‰ã˜ã‚‹ã€‚
 						*/
 						if (tabs[i].linkedBrowser.sessionHistory)
 							tabs[i].linkedBrowser.sessionHistory.PurgeHistory(tabs[i].linkedBrowser.sessionHistory.count);
