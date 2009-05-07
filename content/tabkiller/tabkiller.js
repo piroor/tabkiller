@@ -41,13 +41,17 @@ var TabKiller = {
 				)
 			);
 
-		var menu = document.getElementById('historyUndoMenu');
-		if (menu) {
+		var undoCloseTabMenu = document.getElementById('historyUndoMenu');
+		if (document.getElementById('historyUndoWindowMenu')) {
+			undoCloseTabMenu.setAttribute('collapsed', true);
+		}
+		else {
 			const STRBUNDLE = Components
 					.classes['@mozilla.org/intl/stringbundle;1']
 					.getService(Components.interfaces.nsIStringBundleService);
 			var msg = STRBUNDLE.createBundle('chrome://tabkiller/locale/tabkiller.properties');
-			menu.setAttribute('label', msg.GetStringFromName('undo_close_window'));
+			undoCloseTabMenu.setAttribute('label', msg.GetStringFromName('undo_close_window'));
+			undoCloseTabMenu.removeAttribute('collapsed');
 		}
 
 		document.documentElement.setAttribute('tabkiller-enabled', true);
