@@ -23,6 +23,23 @@ var TabKiller = {
 	},
 	_PromptService : null,
 
+	getTabs : function(aTabBrowser)
+	{
+		var tabs = aTabBrowser.ownerDocument.evaluate(
+				'descendant::*[local-name()="tab"]',
+				aTabBrowser.mTabContainer,
+				null,
+				XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+				null
+			);
+		var array = [];
+		for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
+		{
+			array.push(tabs.snapshotItem(i));
+		}
+		return array;
+	},
+
 
 	init : function()
 	{
@@ -82,11 +99,10 @@ var TabKiller = {
 		if ('__tabkiller__initialized' in aTabBrowser) return;
 
 		var tabs = this.getTabs(aTabBrowser);
-		for (var i = tabs.length-1; i > -1; i--)
-		{
-			if (tabs[i] != aTabBrowser.selectedTab)
-				aTabBrowser.removeTab(tabs[i]);
-		}
+		tabs.forEach(function(aTab) {
+			if (aTab == aTabBrowser.selectedTab) return;
+			aTabBrowser.removeTab(aTab);
+		});
 
 		aTabBrowser.mStrip.collapsed = true;
 		aTabBrowser.mStrip.hidden    = true;
@@ -97,103 +113,19 @@ var TabKiller = {
 		aTabBrowser.addTab = function(aURI, aReferrer, aCharset)
 		{
 			var sv = TabKiller;
-
 			if (sv.tempDisabled) {
 				return this.__tabkiller__originalAddTab.apply(this, arguments);
 			}
-
-			var browserURI = location.href;
-			var behavior = sv.getPref('extensions.tabkiller.tabs.open.behavior');
-			if (behavior == sv.BEHAVIOR_ASK) {
-				var check = { value : false };
-				var prompt = sv.PromptService;
-				var strbundle = sv.strbundle;
-				switch (prompt.confirmEx(
-						window,
-						strbundle.getString('tab_open_behavior_title'),
-						strbundle.getString('tab_open_behavior_text'),
-						(prompt.BUTTON_TITLE_IS_STRING * prompt.BUTTON_POS_0) |
-						(prompt.BUTTON_TITLE_IS_STRING * prompt.BUTTON_POS_1) |
-						(prompt.BUTTON_TITLE_IS_STRING * prompt.BUTTON_POS_2),
-						strbundle.getString('tab_open_behavior_current'),
-						strbundle.getString('tab_open_behavior_ignore'),
-						strbundle.getString('tab_open_behavior_window'),
-						strbundle.getString('tab_open_behavior_never'),
-						check
-					))
-				{
-					case 0: behavior = sv.BEHAVIOR_REDIRECT_TO_CURRENT; break;
-					case 1: behavior = sv.BEHAVIOR_IGNORE; break;
-					case 2: behavior = sv.BEHAVIOR_REDIRECT_TO_WINDOW; break;
-				}
-				if (check.value)
-					sv.setPref('extensions.tabkiller.tabs.open.behavior', behavior);
-			}
-			switch (behavior)
-			{
-				case sv.BEHAVIOR_REDIRECT_TO_WINDOW:
-					window.openDialog(browserURI, '_blank', 'chrome,all,dialog=no', aURI, aCharset, aReferrer);
-					break;
-				case sv.BEHAVIOR_REDIRECT_TO_CURRENT:
-					this.loadURI(aURI, aReferrer, aCharset);
-					break;
-				default:
-				case sv.BEHAVIOR_IGNORE:
-					break;
-			}
+			sv.performTabOpenRequest(this, aURI, aReferrer, aCharset);
 			return this.selectedTab;
 		};
 
 		aTabBrowser.removeTab = function(aTab) {
 			var sv = TabKiller;
-
 			if (sv.tempDisabled) {
 				return this.__tabkiller__originalRemoveTab.apply(this, arguments);
 			}
-
-			var behavior = sv.getPref('extensions.tabkiller.tabs.close.behavior');
-			if (behavior == sv.BEHAVIOR_ASK) {
-				var check = { value : false };
-				var prompt = sv.PromptService;
-				var strbundle = sv.strbundle;
-				switch (prompt.confirmEx(
-						window,
-						strbundle.getString('tab_close_behavior_title'),
-						strbundle.getString('tab_close_behavior_text'),
-						(prompt.BUTTON_TITLE_IS_STRING * prompt.BUTTON_POS_0) |
-						(prompt.BUTTON_TITLE_IS_STRING * prompt.BUTTON_POS_1) |
-						(prompt.BUTTON_TITLE_IS_STRING * prompt.BUTTON_POS_2),
-						strbundle.getString('tab_close_behavior_current'),
-						strbundle.getString('tab_close_behavior_ignore'),
-						strbundle.getString('tab_close_behavior_window'),
-						strbundle.getString('tab_close_behavior_never'),
-						check
-					))
-				{
-					case 0: behavior = sv.BEHAVIOR_REDIRECT_TO_CURRENT; break;
-					case 1: behavior = sv.BEHAVIOR_IGNORE; break;
-					case 2: behavior = sv.BEHAVIOR_REDIRECT_TO_WINDOW; break;
-				}
-				if (check.value)
-					sv.setPref('extensions.tabkiller.tabs.close.behavior', behavior);
-			}
-			switch (behavior)
-			{
-				case sv.BEHAVIOR_REDIRECT_TO_WINDOW:
-					if ('TryToCloseWindow' in window)
-						window.TryToCloseWindow();
-					else if ('TryToCloseBrowserWindow' in window)
-						window.TryToCloseBrowserWindow();
-					else
-						window.close();
-					break;
-				case sv.BEHAVIOR_REDIRECT_TO_CURRENT:
-					this.loadURI('about:blank');
-					break;
-				default:
-				case sv.BEHAVIOR_IGNORE:
-					break;
-			}
+			sv.performTabCloseRequest(this, aTab);
 			return aTab;
 		};
 		aTabBrowser.setStripVisibilityTo = function(aShow) {};
@@ -202,21 +134,75 @@ var TabKiller = {
 		aTabBrowser.__tabkiller__initialized = true;
 	},
 
-	getTabs : function(aTabBrowser)
+	performTabOpenRequest : function(aTabBrowser, aURI, aReferrer, aCharset)
 	{
-		var tabs = aTabBrowser.ownerDocument.evaluate(
-				'descendant::*[local-name()="tab"]',
-				aTabBrowser.mTabContainer,
-				null,
-				XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-				null
-			);
-		var array = [];
-		for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
+		switch (this.getBehaviorForRequest('open', aURI))
 		{
-			array.push(tabs.snapshotItem(i));
+			case this.BEHAVIOR_REDIRECT_TO_WINDOW:
+				window.openDialog(location.href, '_blank', 'chrome,all,dialog=no', aURI, aCharset, aReferrer);
+				break;
+			case this.BEHAVIOR_REDIRECT_TO_CURRENT:
+				aTabBrowser.loadURI(aURI, aReferrer, aCharset);
+				break;
+			default:
+			case this.BEHAVIOR_IGNORE:
+				break;
 		}
-		return array;
+	},
+
+	performTabCloseRequest : function(aTabBrowser, aTab)
+	{
+		switch (this.getBehaviorForRequest('close'))
+		{
+			case this.BEHAVIOR_REDIRECT_TO_WINDOW:
+				if ('TryToCloseWindow' in window)
+					window.TryToCloseWindow();
+				else if ('TryToCloseBrowserWindow' in window)
+					window.TryToCloseBrowserWindow();
+				else
+					window.close();
+				break;
+			case this.BEHAVIOR_REDIRECT_TO_CURRENT:
+				aTab.linkedBrowser.loadURI('about:blank');
+				break;
+			default:
+			case this.BEHAVIOR_IGNORE:
+				break;
+		}
+	},
+
+	getBehaviorForRequest : function(aType)
+	{
+		var behavior = this.getPref('extensions.tabkiller.tabs.'+aType+'.behavior');
+		if (behavior != this.BEHAVIOR_ASK) return behavior;
+
+		var args = Array.slice(arguments);
+		args.shift();
+		var check = { value : false };
+		var prompt = this.PromptService;
+		var strbundle = this.strbundle;
+		switch (prompt.confirmEx(
+				window,
+				strbundle.getString('tab_'+aType+'_behavior_title'),
+				strbundle.getFormattedString('tab_'+aType+'_behavior_text', args),
+				(prompt.BUTTON_TITLE_IS_STRING * prompt.BUTTON_POS_0) |
+				(prompt.BUTTON_TITLE_IS_STRING * prompt.BUTTON_POS_1) |
+				(prompt.BUTTON_TITLE_IS_STRING * prompt.BUTTON_POS_2),
+				strbundle.getString('tab_'+aType+'_behavior_current'),
+				strbundle.getString('tab_'+aType+'_behavior_ignore'),
+				strbundle.getString('tab_'+aType+'_behavior_window'),
+				strbundle.getString('tab_'+aType+'_behavior_never'),
+				check
+			))
+		{
+			case 0: behavior = this.BEHAVIOR_REDIRECT_TO_CURRENT; break;
+			case 1: behavior = this.BEHAVIOR_IGNORE; break;
+			case 2: behavior = this.BEHAVIOR_REDIRECT_TO_WINDOW; break;
+		}
+		if (check.value)
+			this.setPref('extensions.tabkiller.tabs.'+aType+'.behavior', behavior);
+
+		return behavior;
 	},
 
 	addWindowToUndoCache : function()
@@ -250,7 +236,6 @@ var TabKiller = {
 			SS.setWindowState(aWindow, state, false);
 
 			aWindow.TabKiller.getTabs(aWindow.gBrowser)
-				.reverse()
 				.forEach(function(aTab) {
 					if (aTab == current) return;
 					aTab.setAttribute('label', title);
@@ -292,7 +277,6 @@ var TabKiller = {
 		var self = this;
 		window.setTimeout(function() {
 			self.getTabs(gBrowser)
-				.reverse()
 				.forEach(function(aTab) {
 					if (aTab == current) return;
 					gBrowser.removeTab(aTab);
@@ -306,6 +290,7 @@ var TabKiller = {
 
 		var newWin = window.openDialog(location.href, '_blank', 'chrome,all,dialog=no', 'about:blank');
 		newWin.addEventListener('load', function() {
+			newWin.removeEventListener('load', arguments.callee, false);
 			newWin.setTimeout(function() {
 				newWin.fullScreenCanvas.show(newWin.gBrowser);
 				newWin.TabKiller.disable();
@@ -320,19 +305,22 @@ var TabKiller = {
 
 				window.setTimeout(function() {
 					tabs.forEach(function(aTab, aIndex) {
-						if (i == index) return;
+						if (aIndex == index) return;
 						/*
 							このタブは元のウィンドウのタブの複製で、セッションヒストリに
 							複数の項目を含んでいる可能性がある。
 							なので、セッションヒストリをすべて消してから閉じる。
 						*/
-						if (aTab.linkedBrowser.sessionHistory)
-							aTab.linkedBrowser.sessionHistory.PurgeHistory(aTab.linkedBrowser.sessionHistory.count);
+						try {
+							if (aTab.linkedBrowser.sessionHistory)
+								aTab.linkedBrowser.sessionHistory.PurgeHistory(aTab.linkedBrowser.sessionHistory.count);
+						}
+						catch(e) {
+						}
 						aTab.linkedBrowser.contentWindow.location.replace('about:blank');
 					});
 					window.setTimeout(function() {
-						tabs.reverse()
-							.forEach(function(aTab, aIndex) {
+						tabs.forEach(function(aTab, aIndex) {
 								if (aIndex == index) return;
 								newWin.gBrowser.removeTab(aTab);
 							});
