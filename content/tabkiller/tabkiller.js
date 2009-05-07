@@ -265,7 +265,7 @@ var TabKiller = {
 		gBrowser.mStrip.ordinal   = 65000;
 		gBrowser.mStrip.style.overflow  = 'hidden !important';
 		gBrowser.mStrip.style.maxHeight = '0 !important';
-	},,
+	},
 
 	enable : function()
 	{
@@ -278,7 +278,7 @@ var TabKiller = {
 
 	handleEvent : function(aEvent)
 	{
-		switch (aEvent)
+		switch (aEvent.type)
 		{
 			case 'load':
 				this.init();
