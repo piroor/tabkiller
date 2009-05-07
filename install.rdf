@@ -25,47 +25,44 @@
                        em:name="Tab Killer"
                        em:description="Completely disables tabbed browsing feature of Firefox."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_tabkiller.html.en"/>
+		<em:translator>Jean-Bernard Marcon</em:translator>
+		<em:translator>Leszek (teo) yczkowski</em:translator>
+		<em:translator>Mikes Kaszmn Istvn</em:translator>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="ja-JP"
                        em:name="タブキラー"
                        em:description="Firefoxのタブ機能を無効化します。"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_tabkiller.html"/>
+		<em:translator>Jean-Bernard Marcon</em:translator>
+		<em:translator>Leszek (teo) yczkowski</em:translator>
+		<em:translator>Mikes Kaszmn Istvn</em:translator>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="pl-PL"
                        em:name="Tab Killer"
                        em:description="Wyłącza opcję przeglądania w kartach."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_tabkiller.html.en"/>
+		<em:translator>Jean-Bernard Marcon</em:translator>
+		<em:translator>Leszek (teo) yczkowski</em:translator>
+		<em:translator>Mikes Kaszmn Istvn</em:translator>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="hu-HU"
                        em:name="Tab Killer"
                        em:description="Lapok használatának teljes mértékű letiltása."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_tabkiller.html.en"/>
+		<em:translator>Jean-Bernard Marcon</em:translator>
+		<em:translator>Leszek (teo) yczkowski</em:translator>
+		<em:translator>Mikes Kaszmn Istvn</em:translator>
     </em:localized>
 
 
     <em:targetApplication>
       <!-- Firefox -->
       <RDF:Description em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
-                       em:minVersion="1.0"
-                       em:maxVersion="3.0.*" />
+                       em:minVersion="3.0"
+                       em:maxVersion="3.6a1pre" />
     </em:targetApplication>
-    <em:targetApplication>
-      <!-- Mozilla Suite -->
-      <RDF:Description em:id="{86c18b42-e466-45a9-ae7a-9b95ba6f5640}"
-                       em:minVersion="1.0"
-                       em:maxVersion="1.8+" />
-    </em:targetApplication>
-	<em:file>
-		<RDF:Description RDF:about="urn:mozilla:extension:file:tabkiller.jar">
-			<em:package>content/tabkiller/</em:package>
-			<em:locale>locale/en-US/tabkiller/</em:locale>
-			<em:locale>locale/ja-JP/tabkiller/</em:locale>
-			<em:locale>locale/fr-FR/tabkiller/</em:locale>
-			<em:locale>locale/pl-PL/tabkiller/</em:locale>
-		</RDF:Description>
-	</em:file>
   </RDF:Description>
 </RDF:RDF>

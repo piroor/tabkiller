@@ -1,0 +1,9 @@
+content	tabkiller	jar:chrome/tabkiller.jar!/content/tabkiller/
+
+overlay	chrome://browser/content/browser.xul	chrome://tabkiller/content/tabkiller.xul
+
+locale	tabkiller	en-US	jar:chrome/tabkiller.jar!/locale/en-US/tabkiller/
+locale	tabkiller	ja-JP	jar:chrome/tabkiller.jar!/locale/ja-JP/tabkiller/
+locale	tabkiller	fr-FR	jar:chrome/tabkiller.jar!/locale/fr-FR/tabkiller/
+locale	tabkiller	hu-HU	jar:chrome/tabkiller.jar!/locale/hu-HU/tabkiller/
+locale	tabkiller	pl-PL	jar:chrome/tabkiller.jar!/locale/pl-PL/tabkiller/

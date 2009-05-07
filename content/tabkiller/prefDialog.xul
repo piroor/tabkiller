@@ -1,83 +1,38 @@
 <?xml version="1.0"?>
-
-<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
-
-<!DOCTYPE dialog [
+<?xml-stylesheet href="chrome://global/skin/"?>
+<!DOCTYPE prefwindow [
 <!ENTITY % tabkillerDTD SYSTEM "chrome://tabkiller/locale/">
 %tabkillerDTD;
 ]>
-
-<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+<prefwindow xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 		id="tabkillerPrefDialog"
-		windowtype="tabkiller:preferences"
-		title="&tabkiller.pref.title;"
-		buttons="accept,cancel"
-		ondialogaccept="apply();"
-		ondialogcancel="window.close();"
-		orient="vertical"
-		onload="init();">
+		title="&tabkiller.pref.title;">
 
-<script type="application/x-javascript"><![CDATA[
+<prefpane id="prefpane-general" label="">
+	<preferences>
+		<preference id="tabkiller.disabled"
+			name="tabkiller.disabled"
+			type="bool"/>
+		<preference id="tabkiller.openWindowInsteadOfTab"
+			name="tabkiller.openWindowInsteadOfTab"
+			type="bool"/>
+		<preference id="tabkiller.closeWindowInsteadOfTab"
+			name="tabkiller.closeWindowInsteadOfTab"
+			type="bool"/>
+	</preferences>
 
-	var pref;
-
-	function init()
-	{
-		pref = Components.classes['@mozilla.org/preferences;1'].getService(Components.interfaces.nsIPrefBranch);
-
-		var openWindow = true;
-		try {
-			openWindow = pref.getBoolPref('tabkiller.openWindowInsteadOfTab');
-		}
-		catch(e) {
-		}
-		document.getElementById('openWindowInsteadOfTab').checked = openWindow;
-
-		var closeWindow = true;
-		try {
-			closeWindow = pref.getBoolPref('tabkiller.closeWindowInsteadOfTab');
-		}
-		catch(e) {
-		}
-		document.getElementById('closeWindowInsteadOfTab').checked = closeWindow;
-
-		var disabled = false;
-		try {
-			disabled = pref.getBoolPref('tabkiller.disabled');
-		}
-		catch(e) {
-		}
-		document.getElementById('tabKillerDisabled').checked = disabled;
-	}
-
-	function apply()
-	{
-		try {
-			pref.setBoolPref('tabkiller.disabled', document.getElementById('tabKillerDisabled').checked);
-			pref.setBoolPref('tabkiller.openWindowInsteadOfTab', document.getElementById('openWindowInsteadOfTab').checked);
-			pref.setBoolPref('tabkiller.closeWindowInsteadOfTab', document.getElementById('closeWindowInsteadOfTab').checked);
-		}
-		catch(e) {
-//			alert(e);
-		}
-
-		window.close();
-	}
-
-]]></script>
-
-<box orient="vertical">
 	<groupbox orient="vertical">
 		<caption label="&tabkiller.group;"/>
 		<checkbox label="&tabkiller.disabled;"
-			prefstring="tabkiller.disabled"
-			id="tabKillerDisabled"/>
+			id="tabkiller.disabled-check"
+			preference="tabkiller.disabled"/>
 		<checkbox label="&tabkiller.openWindowInsteadOfTab;"
-			id="openWindowInsteadOfTab"/>
+			id="tabkiller.openWindowInsteadOfTab-check"
+			preference="tabkiller.openWindowInsteadOfTab"/>
 		<checkbox label="&tabkiller.closeWindowInsteadOfTab;"
-			id="closeWindowInsteadOfTab"/>
+			id="tabkiller.closeWindowInsteadOfTab-check"
+			preference="tabkiller.closeWindowInsteadOfTab"/>
 	</groupbox>
-</box>
+</prefpane>
 
-</dialog>
+</prefwindow>
