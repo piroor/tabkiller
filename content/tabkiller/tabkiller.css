@@ -13,3 +13,7 @@
 {
     display: none !important;
 }
+
+:root[fullscreencanvas-shown='true'] tabbrowser {
+	visibility: hidden;
+}

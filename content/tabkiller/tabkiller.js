@@ -131,6 +131,12 @@ var TabKiller = {
 		aTabBrowser.setStripVisibilityTo = function(aShow) {};
 		aTabBrowser.getStripVisibility = function() { return false; }
 
+		aTabBrowser.mTabContainer.mTabstrip.scrollByIndex = function() {}
+		aTabBrowser.mTabContainer.mTabstrip.scrollByPixels = function() {}
+		aTabBrowser.mTabContainer.mTabstrip._autorepeatbuttonScroll = function() {}
+		aTabBrowser.mTabContainer.mTabstrip._smoothScrollByPixels = function() {}
+		aTabBrowser.mTabContainer.mTabstrip._startScroll = function() {}
+
 		aTabBrowser.__tabkiller__initialized = true;
 	},
 
@@ -242,8 +248,10 @@ var TabKiller = {
 					aWindow.gBrowser.removeTab(aTab);
 				});
 
-			aWindow.TabKiller.enable();
-			aWindow.fullScreenCanvas.hide();
+			aWindow.setTimeout(function() {
+				aWindow.TabKiller.enable();
+				aWindow.fullScreenCanvas.hide();
+			}, 10);
 		}, this);
 	},
 
@@ -260,10 +268,9 @@ var TabKiller = {
 		SS.undoCloseTab(aWindow, aIndex);
 		var state = SS.getWindowState(window);
 
-		var tabs = this.getTabs(gBrowser);
 		var index = -1;
-		tabs.some(function(aTab, aIndex) {
-			if (aTab != current) return false;
+		this.getTabs(gBrowser).some(function(aTab, aIndex) {
+			if (aTab == current) return false;
 			index = aIndex;
 			/*
 				セッションヒストリの項目数が1で且つlocationがabout:blankの時、
@@ -272,19 +279,16 @@ var TabKiller = {
 				タブを閉じることが出来るというわけ。
 			*/
 			aTab.linkedBrowser.contentWindow.location.replace('about:blank');
+			gBrowser.removeTab(aTab);
 			return true;
 		});
+
 		var self = this;
 		window.setTimeout(function() {
-			self.getTabs(gBrowser)
-				.forEach(function(aTab) {
-					if (aTab == current) return;
-					gBrowser.removeTab(aTab);
-				});
 			self.enable();
 			fullScreenCanvas.hide();
 			delete current;
-		}, 0);
+		}, 10);
 
 		if (index < 0) return;
 
@@ -330,9 +334,9 @@ var TabKiller = {
 						delete index;
 						delete tabs;
 						delete newWin;
-					}, 0);
-				}, 0);
-			}, 0);
+					}, 10);
+				}, 10);
+			}, 10);
 		}, false);
 	},
 
