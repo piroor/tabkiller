@@ -1,13 +1,14 @@
-<!ENTITY tabkiller.title                  "タブキラー">
-<!ENTITY tabkiller.pref.title             "タブキラーの設定">
-<!ENTITY tabkiller.group                  "全般">
+<!ENTITY config.title        "タブキラーの設定">
 
-<!ENTITY tabkiller.disabled "タブキラーを無効にする（再起動後から反映）">
-<!ENTITY tabkiller.openWindowInsteadOfTab "タブの代わりにウィンドウを開く">
-<!ENTITY tabkiller.closeWindowInsteadOfTab "タブの代わりにウィンドウを閉じる">
-
-<!ENTITY tabkiller.about.title       "タブキラーについて">
-<!ENTITY tabkiller.about.name_before "タブキラー Ver.">
-<!ENTITY tabkiller.about.name_after  "">
-<!ENTITY tabkiller.about.destributed "http://piro.sakura.ne.jp/">
-<!ENTITY tabkiller.about.uninstall   "アンインストール">
+<!ENTITY config.tab.general  "全般">
+<!ENTITY config.disabled     "タブキラーを無効にする（再起動後から反映）">
+<!ENTITY config.tabs.open.behavior         "新しいタブを開く要求が行われた時：">
+<!ENTITY config.tabs.open.behavior.ask     "要求をどのように扱うかその都度確認する">
+<!ENTITY config.tabs.open.behavior.current "開こうとしたURIを現在のウィンドウに読み込む">
+<!ENTITY config.tabs.open.behavior.window  "タブの代わりに新しいウィンドウを開く">
+<!ENTITY config.tabs.open.behavior.ignore  "何もしない（要求を無視する）">
+<!ENTITY config.tabs.close.behavior         "現在のタブを閉じる要求が行われた時：">
+<!ENTITY config.tabs.close.behavior.ask     "要求をどのように扱うかその都度確認する">
+<!ENTITY config.tabs.close.behavior.current "現在のページを空にする">
+<!ENTITY config.tabs.close.behavior.window  "タブの代わりにウィンドウを閉じる">
+<!ENTITY config.tabs.close.behavior.ignore  "何もしない（要求を無視する）">

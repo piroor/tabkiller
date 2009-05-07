@@ -5,7 +5,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="{4C65E837-7234-4b19-BBC4-A48C08346004}"
                    em:name="Tab Killer"
-                   em:version="1.1.2007042501"
+                   em:version="2.0.2009050701"
                    em:creator="SHIMODA Hiroshi"
                    em:description="Disables tabbed browsing features of Mozilla completely."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/_tabkiller.html.en"

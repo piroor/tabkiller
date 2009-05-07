@@ -1,34 +1,40 @@
 var TabKiller = {
 
+	BEHAVIOR_ASK                 : -1,
+	BEHAVIOR_REDIRECT_TO_CURRENT : 0,
+	BEHAVIOR_REDIRECT_TO_WINDOW  : 1,
+	BEHAVIOR_IGNORE              : 2,
+
+	get strbundle()
+	{
+		if (!this._strbundle)
+			this._strbundle = document.getElementById('tabkiller_bundle');
+		return this._strbundle;
+	},
+	_strbundle : null,
+
+	get PromptService()
+	{
+		if (!this._PromptService)
+			this._PromptService = Components
+					.classes['@mozilla.org/embedcomp/prompt-service;1']
+					.getService(Components.interfaces.nsIPromptService);
+		return this._PromptService;
+	},
+	_PromptService : null,
+
+
 	init : function()
 	{
 		window.removeEventListener('load', this, false);
 
-		if (this.getPref('tabkiller.disabled')) {
+		if (this.getPref('extensions.tabkiller.disabled')) {
 			aTabBrowser.__tabkiller__initialized = true;
 			document.documentElement.removeAttribute('tabkiller-enabled');
 			return;
 		}
 
 		this.killTabbrowser(document.getElementById('content'));
-
-		if (window.closeWindow)
-			eval(
-				'window.closeWindow = '+
-				window.closeWindow.toSource().replace(
-					/\{/i,
-					'{ TabKiller.addWindowToUndoCache();'
-				)
-			);
-
-		if (window.undoCloseTab)
-			eval(
-				'window.undoCloseTab = '+
-				window.undoCloseTab.toSource().replace(
-					/ss.undoCloseTab\(/i,
-					'TabKiller.restoreWindowFromUndoCache('
-				)
-			);
 
 		// 「すべてタブで開く」の項目を消す
 		if (window.HistoryMenu &&
@@ -46,12 +52,26 @@ var TabKiller = {
 			undoCloseTabMenu.setAttribute('collapsed', true);
 		}
 		else {
-			const STRBUNDLE = Components
-					.classes['@mozilla.org/intl/stringbundle;1']
-					.getService(Components.interfaces.nsIStringBundleService);
-			var msg = STRBUNDLE.createBundle('chrome://tabkiller/locale/tabkiller.properties');
-			undoCloseTabMenu.setAttribute('label', msg.GetStringFromName('undo_close_window'));
+			undoCloseTabMenu.setAttribute('label', this.strbundle.getString('undo_close_window'));
 			undoCloseTabMenu.removeAttribute('collapsed');
+
+			if (window.closeWindow)
+				eval(
+					'window.closeWindow = '+
+					window.closeWindow.toSource().replace(
+						/\{/i,
+						'{ TabKiller.addWindowToUndoCache();'
+					)
+				);
+
+			if (window.undoCloseTab)
+				eval(
+					'window.undoCloseTab = '+
+					window.undoCloseTab.toSource().replace(
+						/ss.undoCloseTab\(/i,
+						'TabKiller.restoreWindowFromUndoCache('
+					)
+				);
 		}
 
 		document.documentElement.setAttribute('tabkiller-enabled', true);
@@ -76,34 +96,103 @@ var TabKiller = {
 
 		aTabBrowser.addTab = function(aURI, aReferrer, aCharset)
 		{
-			if (TabKiller.tempDisabled) {
+			var sv = TabKiller;
+
+			if (sv.tempDisabled) {
 				return this.__tabkiller__originalAddTab.apply(this, arguments);
 			}
 
 			var browserURI = location.href;
-			var openWindow = TabKiller.getPref('tabkiller.openWindowInsteadOfTab');
-			if (openWindow) {
-				window.openDialog(browserURI, '_blank', 'chrome,all,dialog=no', aURI, aCharset, aReferrer);
+			var behavior = sv.getPref('extensions.tabkiller.tabs.open.behavior');
+			if (behavior == sv.BEHAVIOR_ASK) {
+				var check = { value : false };
+				var prompt = sv.PromptService;
+				var strbundle = sv.strbundle;
+				switch (prompt.confirmEx(
+						window,
+						strbundle.getString('tab_open_behavior_title'),
+						strbundle.getString('tab_open_behavior_text'),
+						(prompt.BUTTON_TITLE_IS_STRING * prompt.BUTTON_POS_0) |
+						(prompt.BUTTON_TITLE_IS_STRING * prompt.BUTTON_POS_1) |
+						(prompt.BUTTON_TITLE_IS_STRING * prompt.BUTTON_POS_2),
+						strbundle.getString('tab_open_behavior_current'),
+						strbundle.getString('tab_open_behavior_ignore'),
+						strbundle.getString('tab_open_behavior_window'),
+						strbundle.getString('tab_open_behavior_never'),
+						check
+					))
+				{
+					case 0: behavior = sv.BEHAVIOR_REDIRECT_TO_CURRENT; break;
+					case 1: behavior = sv.BEHAVIOR_IGNORE; break;
+					case 2: behavior = sv.BEHAVIOR_REDIRECT_TO_WINDOW; break;
+				}
+				if (check.value)
+					sv.setPref('extensions.tabkiller.tabs.open.behavior', behavior);
 			}
-			else {
-				this.loadURI(aURI, aReferrer, aCharset);
+			switch (behavior)
+			{
+				case sv.BEHAVIOR_REDIRECT_TO_WINDOW:
+					window.openDialog(browserURI, '_blank', 'chrome,all,dialog=no', aURI, aCharset, aReferrer);
+					break;
+				case sv.BEHAVIOR_REDIRECT_TO_CURRENT:
+					this.loadURI(aURI, aReferrer, aCharset);
+					break;
+				default:
+				case sv.BEHAVIOR_IGNORE:
+					break;
 			}
 			return this.selectedTab;
 		};
 
 		aTabBrowser.removeTab = function(aTab) {
-			if (TabKiller.tempDisabled) {
+			var sv = TabKiller;
+
+			if (sv.tempDisabled) {
 				return this.__tabkiller__originalRemoveTab.apply(this, arguments);
 			}
 
-			var closeWindow = TabKiller.getPref('tabkiller.closeWindowInsteadOfTab');
-			if (closeWindow) {
-				if ('TryToCloseWindow' in window)
-					window.TryToCloseWindow();
-				else if ('TryToCloseBrowserWindow' in window)
-					window.TryToCloseBrowserWindow();
-				else
-					window.close();
+			var behavior = sv.getPref('extensions.tabkiller.tabs.close.behavior');
+			if (behavior == sv.BEHAVIOR_ASK) {
+				var check = { value : false };
+				var prompt = sv.PromptService;
+				var strbundle = sv.strbundle;
+				switch (prompt.confirmEx(
+						window,
+						strbundle.getString('tab_close_behavior_title'),
+						strbundle.getString('tab_close_behavior_text'),
+						(prompt.BUTTON_TITLE_IS_STRING * prompt.BUTTON_POS_0) |
+						(prompt.BUTTON_TITLE_IS_STRING * prompt.BUTTON_POS_1) |
+						(prompt.BUTTON_TITLE_IS_STRING * prompt.BUTTON_POS_2),
+						strbundle.getString('tab_close_behavior_current'),
+						strbundle.getString('tab_close_behavior_ignore'),
+						strbundle.getString('tab_close_behavior_window'),
+						strbundle.getString('tab_close_behavior_never'),
+						check
+					))
+				{
+					case 0: behavior = sv.BEHAVIOR_REDIRECT_TO_CURRENT; break;
+					case 1: behavior = sv.BEHAVIOR_IGNORE; break;
+					case 2: behavior = sv.BEHAVIOR_REDIRECT_TO_WINDOW; break;
+				}
+				if (check.value)
+					sv.setPref('extensions.tabkiller.tabs.close.behavior', behavior);
+			}
+			switch (behavior)
+			{
+				case sv.BEHAVIOR_REDIRECT_TO_WINDOW:
+					if ('TryToCloseWindow' in window)
+						window.TryToCloseWindow();
+					else if ('TryToCloseBrowserWindow' in window)
+						window.TryToCloseBrowserWindow();
+					else
+						window.close();
+					break;
+				case sv.BEHAVIOR_REDIRECT_TO_CURRENT:
+					this.loadURI('about:blank');
+					break;
+				default:
+				case sv.BEHAVIOR_IGNORE:
+					break;
 			}
 			return aTab;
 		};

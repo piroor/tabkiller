@@ -4,4 +4,8 @@
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 <script type="application/x-javascript" src="prefs.js"/>
 <script type="application/x-javascript" src="tabkiller.js"/>
+<stringbundleset id="stringbundleset">
+	<stringbundle id="tabkiller_bundle"
+		src="chrome://tabkiller/locale/tabkiller.properties"/>
+</stringbundleset>
 </overlay>

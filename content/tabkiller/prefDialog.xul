@@ -6,32 +6,45 @@
 ]>
 <prefwindow xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 		id="tabkillerPrefDialog"
-		title="&tabkiller.pref.title;">
+		title="&config.title;">
 
-<prefpane id="prefpane-general" label="">
+<prefpane id="prefpane-general" label="&config.tab.general;">
 	<preferences>
-		<preference id="tabkiller.disabled"
-			name="tabkiller.disabled"
+		<preference id="extensions.tabkiller.disabled"
+			name="extensions.tabkiller.disabled"
 			type="bool"/>
-		<preference id="tabkiller.openWindowInsteadOfTab"
-			name="tabkiller.openWindowInsteadOfTab"
-			type="bool"/>
-		<preference id="tabkiller.closeWindowInsteadOfTab"
-			name="tabkiller.closeWindowInsteadOfTab"
-			type="bool"/>
+		<preference id="extensions.tabkiller.tabs.open.behavior"
+			name="extensions.tabkiller.tabs.open.behavior"
+			type="int"/>
+		<preference id="extensions.tabkiller.tabs.close.behavior"
+			name="extensions.tabkiller.tabs.close.behavior"
+			type="int"/>
 	</preferences>
 
+	<checkbox label="&config.disabled;"
+		id="extensions.tabkiller.disabled-check"
+		preference="extensions.tabkiller.disabled"/>
 	<groupbox orient="vertical">
-		<caption label="&tabkiller.group;"/>
-		<checkbox label="&tabkiller.disabled;"
-			id="tabkiller.disabled-check"
-			preference="tabkiller.disabled"/>
-		<checkbox label="&tabkiller.openWindowInsteadOfTab;"
-			id="tabkiller.openWindowInsteadOfTab-check"
-			preference="tabkiller.openWindowInsteadOfTab"/>
-		<checkbox label="&tabkiller.closeWindowInsteadOfTab;"
-			id="tabkiller.closeWindowInsteadOfTab-check"
-			preference="tabkiller.closeWindowInsteadOfTab"/>
+		<caption label="&config.tabs.open.behavior;"/>
+		<radiogroup orient="vertical"
+			id="extensions.tabkiller.tabs.open.behavior-radio"
+			preference="extensions.tabkiller.tabs.open.behavior">
+			<radio value="-1" label="&config.tabs.open.behavior.ask;"/>
+			<radio value="0"  label="&config.tabs.open.behavior.current;"/>
+			<radio value="1"  label="&config.tabs.open.behavior.window;"/>
+			<radio value="2"  label="&config.tabs.open.behavior.ignore;"/>
+		</radiogroup>
+	</groupbox>
+	<groupbox orient="vertical">
+		<caption label="&config.tabs.close.behavior;"/>
+		<radiogroup orient="vertical"
+			id="extensions.tabkiller.tabs.close.behavior-radio"
+			preference="extensions.tabkiller.tabs.close.behavior">
+			<radio value="-1" label="&config.tabs.close.behavior.ask;"/>
+			<radio value="0"  label="&config.tabs.close.behavior.current;"/>
+			<radio value="1"  label="&config.tabs.close.behavior.window;"/>
+			<radio value="2"  label="&config.tabs.close.behavior.ignore;"/>
+		</radiogroup>
 	</groupbox>
 </prefpane>
 

@@ -1,13 +1,14 @@
-<!ENTITY tabkiller.title                  "Tab Killer">
-<!ENTITY tabkiller.pref.title             "Tab Killer beállítások">
-<!ENTITY tabkiller.group                  "Általános">
+<!ENTITY config.title             "Tab Killer beállítások">
+<!ENTITY config.tab.general       "Általános">
 
-<!ENTITY tabkiller.disabled "Tab Killer letiltása (újraindítás szükséges)">
-<!ENTITY tabkiller.openWindowInsteadOfTab "Új ablakok megnyitása új lapok helyett">
-<!ENTITY tabkiller.closeWindowInsteadOfTab "Ablak bezárása lapok helyett">
-
-<!ENTITY tabkiller.about.title       "Tab Killer Névjegy">
-<!ENTITY tabkiller.about.name_before "Tab Killer">
-<!ENTITY tabkiller.about.name_after  "változat">
-<!ENTITY tabkiller.about.destributed "http://piro.sakura.ne.jp/">
-<!ENTITY tabkiller.about.uninstall   "Eltávolítás">
+<!ENTITY config.disabled "Tab Killer letiltása (újraindítás szükséges)">
+<!ENTITY config.tabs.open.behavior         "When new tab is requrested to be opened">
+<!ENTITY config.tabs.open.behavior.ask     "Ask me how to treat the request">
+<!ENTITY config.tabs.open.behavior.current "Load requested URI into the current window">
+<!ENTITY config.tabs.open.behavior.window  "Open new window instead of new tab">
+<!ENTITY config.tabs.open.behavior.ignore  "Ignore the request">
+<!ENTITY config.tabs.close.behavior         "When the current tab is requrested to be closed">
+<!ENTITY config.tabs.close.behavior.ask     "Ask me how to treat the request">
+<!ENTITY config.tabs.close.behavior.current "Unload the current page">
+<!ENTITY config.tabs.close.behavior.window  "Close the window instead of tab">
+<!ENTITY config.tabs.close.behavior.ignore  "Ignore the request">
