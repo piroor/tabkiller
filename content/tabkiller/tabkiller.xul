@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="chrome://tabkiller/content/tabkiller.css" type="text/css"?>
 <?xml-stylesheet href="chrome://tabkiller/locale/tabkiller.css" type="text/css"?>
+<?xul-overlay href="fullScreenCanvas.xul"?>
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 <script type="application/x-javascript" src="prefs.js"/>
 <script type="application/x-javascript" src="tabkiller.js"/>

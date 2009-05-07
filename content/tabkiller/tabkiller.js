@@ -242,30 +242,29 @@ var TabKiller = {
 		var state = SS.getWindowState(window);
 		var title = gBrowser.selectedTab.getAttribute('label');
 
-		var current;
-		var tabs;
-		for (var i = 0; i < windows.length; i++)
-		{
-			windows[i].TabKiller.disable();
+		windows.forEach(function(aWindow) {
+			aWindow.fullScreenCanvas.show(aWindow.gBrowser);
+			aWindow.TabKiller.disable();
 
-			current = windows[i].gBrowser.selectedTab;
-			SS.setWindowState(windows[i], state, false);
+			current = aWindow.gBrowser.selectedTab;
+			SS.setWindowState(aWindow, state, false);
 
-			tabs = windows[i].TabKiller.getTabs(windows[i].gBrowser);
-			for (var j = tabs.length-1; j > -1; j--)
-			{
-				if (tabs[j] != current) {
-					tabs[j].setAttribute('label', title);
-					windows[i].gBrowser.removeTab(tabs[j]);
-				}
-			}
+			aWindow.TabKiller.getTabs(aWindow.gBrowser)
+				.reverse()
+				.forEach(function(aTab) {
+					if (aTab == current) return;
+					aTab.setAttribute('label', title);
+					aWindow.gBrowser.removeTab(aTab);
+				});
 
-			windows[i].TabKiller.enable();
-		}
+			aWindow.TabKiller.enable();
+			aWindow.fullScreenCanvas.hide();
+		}, this);
 	},
 
 	restoreWindowFromUndoCache : function(aWindow, aIndex)
 	{
+		fullScreenCanvas.show(gBrowser);
 		this.disable();
 
 		const SS = Components
@@ -278,29 +277,28 @@ var TabKiller = {
 
 		var tabs = this.getTabs(gBrowser);
 		var index = -1;
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
-		{
-			if (index < 0 && tabs[i] != current) {
-				index = i;
-				/*
-					セッションヒストリの項目数が1で且つlocationがabout:blankの時、
-					nsISessionStoreはそのタブを履歴に残さない。
-					つまり、これを逆手に取れば、「閉じたタブ」の履歴に残さずに
-					タブを閉じることが出来るというわけ。
-				*/
-				tabs[i].linkedBrowser.contentWindow.location.replace('about:blank');
-				break;
-			}
-		}
+		tabs.some(function(aTab, aIndex) {
+			if (aTab != current) return false;
+			index = aIndex;
+			/*
+				セッションヒストリの項目数が1で且つlocationがabout:blankの時、
+				nsISessionStoreはそのタブを履歴に残さない。
+				つまり、これを逆手に取れば、「閉じたタブ」の履歴に残さずに
+				タブを閉じることが出来るというわけ。
+			*/
+			aTab.linkedBrowser.contentWindow.location.replace('about:blank');
+			return true;
+		});
 		var self = this;
 		window.setTimeout(function() {
-			var tabs = self.getTabs(gBrowser);
-			for (var i = tabs.length-1; i > -1; i--)
-			{
-				if (tabs[i] != current)
-					gBrowser.removeTab(tabs[i]);
-			}
+			self.getTabs(gBrowser)
+				.reverse()
+				.forEach(function(aTab) {
+					if (aTab == current) return;
+					gBrowser.removeTab(aTab);
+				});
 			self.enable();
+			fullScreenCanvas.hide();
 			delete current;
 		}, 0);
 
@@ -309,6 +307,7 @@ var TabKiller = {
 		var newWin = window.openDialog(location.href, '_blank', 'chrome,all,dialog=no', 'about:blank');
 		newWin.addEventListener('load', function() {
 			newWin.setTimeout(function() {
+				newWin.fullScreenCanvas.show(newWin.gBrowser);
 				newWin.TabKiller.disable();
 
 				index += newWin.TabKiller.getTabs(newWin.gBrowser).length;
@@ -320,26 +319,25 @@ var TabKiller = {
 				newWin.focus();
 
 				window.setTimeout(function() {
-					for (var i = 0, maxi = tabs.length; i < maxi; i++)
-					{
-						if (i != index) {
-							/*
-								このタブは元のウィンドウのタブの複製で、セッションヒストリに
-								複数の項目を含んでいる可能性がある。
-								なので、セッションヒストリをすべて消してから閉じる。
-							*/
-							if (tabs[i].linkedBrowser.sessionHistory)
-								tabs[i].linkedBrowser.sessionHistory.PurgeHistory(tabs[i].linkedBrowser.sessionHistory.count);
-							tabs[i].linkedBrowser.contentWindow.location.replace('about:blank');
-						}
-					}
+					tabs.forEach(function(aTab, aIndex) {
+						if (i == index) return;
+						/*
+							このタブは元のウィンドウのタブの複製で、セッションヒストリに
+							複数の項目を含んでいる可能性がある。
+							なので、セッションヒストリをすべて消してから閉じる。
+						*/
+						if (aTab.linkedBrowser.sessionHistory)
+							aTab.linkedBrowser.sessionHistory.PurgeHistory(aTab.linkedBrowser.sessionHistory.count);
+						aTab.linkedBrowser.contentWindow.location.replace('about:blank');
+					});
 					window.setTimeout(function() {
-						for (var i = tabs.length-1; i > -1; i--)
-						{
-							if (i != index)
-								newWin.gBrowser.removeTab(tabs[i]);
-						}
+						tabs.reverse()
+							.forEach(function(aTab, aIndex) {
+								if (aIndex == index) return;
+								newWin.gBrowser.removeTab(aTab);
+							});
 						newWin.TabKiller.enable();
+						newWin.fullScreenCanvas.hide();
 
 						delete index;
 						delete tabs;
