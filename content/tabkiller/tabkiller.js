@@ -56,13 +56,10 @@ var TabKiller = {
 		// 「すべてタブで開く」の項目を消す
 		if (window.HistoryMenu &&
 			window.HistoryMenu.populateUndoSubmenu)
-			eval(
-				'window.HistoryMenu.populateUndoSubmenu = '+
-				window.HistoryMenu.populateUndoSubmenu.toSource().replace(
-					/undoPopup.appendChild\(document.createElement\("menuseparator"\)\);/i,
-					'return;'
-				)
-			);
+			eval('window.HistoryMenu.populateUndoSubmenu = '+window.HistoryMenu.populateUndoSubmenu.toSource().replace(
+				/undoPopup.appendChild\(document.createElement\("menuseparator"\)\);/i,
+				'return;'
+			));
 
 		var undoCloseTabMenu = document.getElementById('historyUndoMenu');
 		if (document.getElementById('historyUndoWindowMenu')) {
@@ -73,22 +70,16 @@ var TabKiller = {
 			undoCloseTabMenu.removeAttribute('collapsed');
 
 			if (window.closeWindow)
-				eval(
-					'window.closeWindow = '+
-					window.closeWindow.toSource().replace(
-						/\{/i,
-						'{ TabKiller.addWindowToUndoCache();'
-					)
-				);
+				eval('window.closeWindow = '+window.closeWindow.toSource().replace(
+					/\{/i,
+					'{ TabKiller.addWindowToUndoCache();'
+				));
 
 			if (window.undoCloseTab)
-				eval(
-					'window.undoCloseTab = '+
-					window.undoCloseTab.toSource().replace(
-						/ss.undoCloseTab\(/i,
-						'TabKiller.restoreWindowFromUndoCache('
-					)
-				);
+				eval('window.undoCloseTab = '+window.undoCloseTab.toSource().replace(
+					/ss.undoCloseTab\(/i,
+					'TabKiller.restoreWindowFromUndoCache('
+				));
 		}
 
 		document.documentElement.setAttribute('tabkiller-enabled', true);
