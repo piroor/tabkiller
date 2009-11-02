@@ -133,13 +133,24 @@ var TabKiller = {
 
 	performTabOpenRequest : function(aTabBrowser, aURI, aReferrer, aCharset)
 	{
+		var referrer, charset;
+		if (aReferrer &&
+			typeof aReferrer == 'object' &&
+			aReferrer instanceof Components.interfaces.nsIURI) {
+			referrer = aReferrer;
+			charset = aCharset;
+		}
+		else {
+			referrer = aReferrer.referrerURI;
+			charset = aReferrer.charset;
+		}
 		switch (this.getBehaviorForRequest('open', aURI))
 		{
 			case this.BEHAVIOR_REDIRECT_TO_WINDOW:
-				window.openDialog(location.href, '_blank', 'chrome,all,dialog=no', aURI, aCharset, aReferrer);
+				window.openDialog(location.href, '_blank', 'chrome,all,dialog=no', aURI, charset, referrer);
 				break;
 			case this.BEHAVIOR_REDIRECT_TO_CURRENT:
-				aTabBrowser.loadURI(aURI, aReferrer, aCharset);
+				aTabBrowser.loadURI(aURI, referrer, charset);
 				break;
 			default:
 			case this.BEHAVIOR_IGNORE:
