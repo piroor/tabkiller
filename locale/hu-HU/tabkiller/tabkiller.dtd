@@ -1,14 +1,14 @@
-<!ENTITY config.title             "Tab Killer beállítások">
+<!ENTITY config.title             "Tab Killer - beállítások">
 <!ENTITY config.tab.general       "Általános">
 
 <!ENTITY config.disabled "Tab Killer letiltása (újraindítás szükséges)">
-<!ENTITY config.tabs.open.behavior         "When new tab is requrested to be opened">
-<!ENTITY config.tabs.open.behavior.ask     "Ask me how to treat the request">
-<!ENTITY config.tabs.open.behavior.current "Load requested URI into the current window">
-<!ENTITY config.tabs.open.behavior.window  "Open new window instead of new tab">
-<!ENTITY config.tabs.open.behavior.ignore  "Ignore the request">
-<!ENTITY config.tabs.close.behavior         "When the current tab is requrested to be closed">
-<!ENTITY config.tabs.close.behavior.ask     "Ask me how to treat the request">
-<!ENTITY config.tabs.close.behavior.current "Unload the current page">
-<!ENTITY config.tabs.close.behavior.window  "Close the window instead of tab">
-<!ENTITY config.tabs.close.behavior.ignore  "Ignore the request">
+<!ENTITY config.tabs.open.behavior         "Ha új lap megnyitására kerülne sor">
+<!ENTITY config.tabs.open.behavior.ask     "Kérdezzen rá a végrehajtandó műveletre">
+<!ENTITY config.tabs.open.behavior.current "Oldal címének betöltése a jelenlegi ablakba">
+<!ENTITY config.tabs.open.behavior.window  "Új ablak megnyitása új lap helyett">
+<!ENTITY config.tabs.open.behavior.ignore  "Kérés figyelmen kívül hagyása">
+<!ENTITY config.tabs.close.behavior         "Ha a jelenlegi lap bezárására kerülne sor">
+<!ENTITY config.tabs.close.behavior.ask     "Kérdezzen rá a végrehajtandó műveletre">
+<!ENTITY config.tabs.close.behavior.current "Jelenlegi lap eltávolítása">
+<!ENTITY config.tabs.close.behavior.window  "Ablak bezárása a lap bezárása helyett">
+<!ENTITY config.tabs.close.behavior.ignore  "Kérés figyelmen kívül hagyása">

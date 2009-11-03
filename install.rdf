@@ -26,35 +26,38 @@
                        em:description="Completely disables tabbed browsing feature of Firefox."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_tabkiller.html.en"/>
 		<em:translator>Jean-Bernard Marcon</em:translator>
-		<em:translator>Leszek (teo) yczkowski</em:translator>
-		<em:translator>Mikes Kaszmn Istvn</em:translator>
+		<em:translator>Leszek (teo) Życzkowski</em:translator>
+		<em:translator>Mikes Kaszmán István</em:translator>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="ja-JP"
                        em:name="タブキラー"
                        em:description="Firefoxのタブ機能を無効化します。"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabkiller.html"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabkiller.html">
 		<em:translator>Jean-Bernard Marcon</em:translator>
-		<em:translator>Leszek (teo) yczkowski</em:translator>
-		<em:translator>Mikes Kaszmn Istvn</em:translator>
+		<em:translator>Leszek (teo) Życzkowski</em:translator>
+		<em:translator>Mikes Kaszmán István</em:translator>
+     </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="pl-PL"
                        em:name="Tab Killer"
                        em:description="Wyłącza opcję przeglądania w kartach."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabkiller.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabkiller.html.en">
 		<em:translator>Jean-Bernard Marcon</em:translator>
-		<em:translator>Leszek (teo) yczkowski</em:translator>
-		<em:translator>Mikes Kaszmn Istvn</em:translator>
+		<em:translator>Leszek (teo) Życzkowski</em:translator>
+		<em:translator>Mikes Kaszmán István</em:translator>
+     </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="hu-HU"
                        em:name="Tab Killer"
                        em:description="Lapok használatának teljes mértékű letiltása."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabkiller.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabkiller.html.en">
 		<em:translator>Jean-Bernard Marcon</em:translator>
-		<em:translator>Leszek (teo) yczkowski</em:translator>
-		<em:translator>Mikes Kaszmn Istvn</em:translator>
+		<em:translator>Leszek (teo) Życzkowski</em:translator>
+		<em:translator>Mikes Kaszmán István</em:translator>
+     </RDF:Description>
     </em:localized>
 
 
