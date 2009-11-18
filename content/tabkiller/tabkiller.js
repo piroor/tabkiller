@@ -133,16 +133,17 @@ var TabKiller = {
 
 	performTabOpenRequest : function(aTabBrowser, aURI, aReferrer, aCharset)
 	{
-		var referrer, charset;
-		if (aReferrer &&
-			typeof aReferrer == 'object' &&
-			aReferrer instanceof Components.interfaces.nsIURI) {
-			referrer = aReferrer;
-			charset = aCharset;
-		}
-		else {
-			referrer = aReferrer.referrerURI;
-			charset = aReferrer.charset;
+		var referrer = null,
+			charset = null;
+		if (aReferrer && typeof aReferrer == 'object') {
+			if (aReferrer instanceof Components.interfaces.nsIURI) {
+				referrer = aReferrer;
+				charset = aCharset;
+			}
+			else {
+				referrer = aReferrer.referrerURI;
+				charset = aReferrer.charset;
+			}
 		}
 		switch (this.getBehaviorForRequest('open', aURI))
 		{
