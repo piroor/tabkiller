@@ -40,6 +40,16 @@ var TabKiller = {
 		return array;
 	},
 
+	get rootContentViewer() 
+	{
+		return window
+				.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+				.getInterface(Components.interfaces.nsIWebNavigation)
+				.QueryInterface(Components.interfaces.nsIDocShell)
+				.contentViewer
+				.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer);
+	},
+
 
 	init : function()
 	{
@@ -238,7 +248,7 @@ var TabKiller = {
 		var title = gBrowser.selectedTab.getAttribute('label');
 
 		windows.forEach(function(aWindow) {
-			aWindow.fullScreenCanvas.show(aWindow.gBrowser);
+			aWindow.TabKiller.rootContentViewer.hide();
 			aWindow.TabKiller.disable();
 
 			current = aWindow.gBrowser.selectedTab;
@@ -253,14 +263,14 @@ var TabKiller = {
 
 			aWindow.setTimeout(function() {
 				aWindow.TabKiller.enable();
-				aWindow.fullScreenCanvas.hide();
+				aWindow.TabKiller.rootContentViewer.show();
 			}, 10);
 		}, this);
 	},
 
 	restoreWindowFromUndoCache : function(aWindow, aIndex)
 	{
-		fullScreenCanvas.show(gBrowser);
+		this.rootContentViewer.hide();
 		this.disable();
 
 		const SS = Components
@@ -289,7 +299,7 @@ var TabKiller = {
 		var self = this;
 		window.setTimeout(function() {
 			self.enable();
-			fullScreenCanvas.hide();
+			self.rootContentViewer.show();
 			delete current;
 		}, 10);
 
@@ -299,7 +309,7 @@ var TabKiller = {
 		newWin.addEventListener('load', function() {
 			newWin.removeEventListener('load', arguments.callee, false);
 			newWin.setTimeout(function() {
-				newWin.fullScreenCanvas.show(newWin.gBrowser);
+				newWin.TabKiller.rootContentViewer.hide();
 				newWin.TabKiller.disable();
 
 				index += newWin.TabKiller.getTabs(newWin.gBrowser).length;
@@ -332,7 +342,7 @@ var TabKiller = {
 								newWin.gBrowser.removeTab(aTab);
 							});
 						newWin.TabKiller.enable();
-						newWin.fullScreenCanvas.hide();
+						newWin.TabKiller.rootContentViewer.show();
 
 						delete index;
 						delete tabs;
