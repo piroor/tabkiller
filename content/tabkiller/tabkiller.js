@@ -40,6 +40,15 @@ var TabKiller = {
 		return array;
 	},
 
+	stopRendering : function() 
+	{
+		this.rootContentViewer.hide();
+	},
+	startRendering : function() 
+	{
+		this.rootContentViewer.show();
+	},
+ 
 	get rootContentViewer() 
 	{
 		return window
@@ -248,7 +257,7 @@ var TabKiller = {
 		var title = gBrowser.selectedTab.getAttribute('label');
 
 		windows.forEach(function(aWindow) {
-			aWindow.TabKiller.rootContentViewer.hide();
+			aWindow.TabKiller.stopRendering();
 			aWindow.TabKiller.disable();
 
 			current = aWindow.gBrowser.selectedTab;
@@ -263,14 +272,14 @@ var TabKiller = {
 
 			aWindow.setTimeout(function() {
 				aWindow.TabKiller.enable();
-				aWindow.TabKiller.rootContentViewer.show();
+				aWindow.TabKiller.startRendering();
 			}, 10);
 		}, this);
 	},
 
 	restoreWindowFromUndoCache : function(aWindow, aIndex)
 	{
-		this.rootContentViewer.hide();
+		this.stopRendering();
 		this.disable();
 
 		const SS = Components
@@ -299,7 +308,7 @@ var TabKiller = {
 		var self = this;
 		window.setTimeout(function() {
 			self.enable();
-			self.rootContentViewer.show();
+			self.startRendering();
 			delete current;
 		}, 10);
 
@@ -309,7 +318,7 @@ var TabKiller = {
 		newWin.addEventListener('load', function() {
 			newWin.removeEventListener('load', arguments.callee, false);
 			newWin.setTimeout(function() {
-				newWin.TabKiller.rootContentViewer.hide();
+				newWin.TabKiller.stopRendering();
 				newWin.TabKiller.disable();
 
 				index += newWin.TabKiller.getTabs(newWin.gBrowser).length;
@@ -342,7 +351,7 @@ var TabKiller = {
 								newWin.gBrowser.removeTab(aTab);
 							});
 						newWin.TabKiller.enable();
-						newWin.TabKiller.rootContentViewer.show();
+						newWin.TabKiller.startRendering();
 
 						delete index;
 						delete tabs;
