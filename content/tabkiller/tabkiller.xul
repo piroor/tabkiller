@@ -2,9 +2,9 @@
 <?xml-stylesheet href="chrome://tabkiller/content/tabkiller.css" type="text/css"?>
 <?xml-stylesheet href="chrome://tabkiller/locale/tabkiller.css" type="text/css"?>
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-<script type="application/x-javascript" src="prefs.js"/>
-<script type="application/x-javascript" src="stopRendering.js"/>
-<script type="application/x-javascript" src="tabkiller.js"/>
+<script type="application/javascript" src="prefs.js"/>
+<script type="application/javascript" src="stopRendering.js"/>
+<script type="application/javascript" src="tabkiller.js"/>
 <stringbundleset id="stringbundleset">
 	<stringbundle id="tabkiller_bundle"
 		src="chrome://tabkiller/locale/tabkiller.properties"/>
