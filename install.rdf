@@ -40,7 +40,7 @@
      </RDF:Description>
     </em:localized>
     <em:localized>
-      <RDF:Description em:locale="pl-PL"
+      <RDF:Description em:locale="pl"
                        em:name="Tab Killer"
                        em:description="Wyłącza opcję przeglądania w kartach."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_tabkiller.html.en">
