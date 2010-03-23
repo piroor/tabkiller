@@ -40,6 +40,11 @@ var TabKiller = {
 		return array;
 	},
 
+	getTabStrip : function(aTabBrowser) 
+	{
+		return aTabBrowser.mStrip || aTabBrowser.tabContainer.parentNode;
+	},
+
 	stopRendering : function() 
 	{
 		window['piro.sakura.ne.jp'].stopRendering.stop();
@@ -104,8 +109,9 @@ var TabKiller = {
 			aTabBrowser.removeTab(aTab);
 		});
 
-		aTabBrowser.mStrip.collapsed = true;
-		aTabBrowser.mStrip.hidden    = true;
+		var strip = this.getTabStrip(aTabBrowser);
+		strip.collapsed = true;
+		strip.hidden    = true;
 
 		aTabBrowser.__tabkiller__originalAddTab    = aTabBrowser.addTab;
 		aTabBrowser.__tabkiller__originalRemoveTab = aTabBrowser.removeTab;
@@ -355,19 +361,21 @@ var TabKiller = {
 	disable : function()
 	{
 		this.tempDisabled = true;
-		gBrowser.mStrip.collapsed = false;
-		gBrowser.mStrip.hidden    = false;
-		gBrowser.mStrip.ordinal   = 65000;
-		gBrowser.mStrip.style.overflow  = 'hidden !important';
-		gBrowser.mStrip.style.maxHeight = '0 !important';
+		var strip = this.getTabStrip(gBrowser);
+		strip.collapsed = false;
+		strip.hidden    = false;
+		strip.ordinal   = 65000;
+		strip.style.overflow  = 'hidden !important';
+		strip.style.maxHeight = '0 !important';
 	},
 
 	enable : function()
 	{
 		this.tempDisabled = false;
+		var strip = this.getTabStrip(gBrowser);
 		window.setTimeout(function() {
-			gBrowser.mStrip.collapsed = true;
-			gBrowser.mStrip.hidden    = true;
+			strip.collapsed = true;
+			strip.hidden    = true;
 		}, 0);
 	},
 
