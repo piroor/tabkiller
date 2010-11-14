@@ -1,0 +1,18 @@
+undo_close_window=Utoljára bezárt ablakok
+
+tab_open_behavior_title=Egy lap megnyitásásának kezelése milyen legyen?
+tab_open_behavior_text=Kérés egy új lap megnyitására az alábbi címmel:\n%1$S\nHogyan kezeljük?
+tab_open_behavior_never=Ne jelenjen meg ez a párbeszédablak többet
+tab_open_behavior_ignore=Nincs művelet
+tab_open_behavior_window=Új ablak megnyitása
+tab_open_behavior_current=Betöltés a jelenlegi ablakba
+
+tab_close_behavior_title=Egy lap bezárásának kezelése milyen legyen?
+tab_close_behavior_text=Kérés a jelenlegi lap bezárására. Hogyan kezeljük?
+tab_close_behavior_never=Ne jelenjen meg ez a párbeszédablak többet
+tab_close_behavior_ignore=Nincs művelet
+tab_close_behavior_window=Ablak bezárása
+tab_close_behavior_current=Jelenlegi oldal eltávolítása
+
+extensions.{4C65E837-7234-4b19-BBC4-A48C08346004}.name=Tab Killer
+extensions.{4C65E837-7234-4b19-BBC4-A48C08346004}.description=Lapok használatának teljes mértékű letiltása.
