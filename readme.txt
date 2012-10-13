@@ -150,4 +150,4 @@ Preferences（設定） > Advanced（詳細） > Tab Killer（タブキラー）で
 
 ------------------------------------------------------------------------
 Tab Killer for NS7 & Moz & Firefox
-Copyright 2004-2005 Piro(SHIMODA Hiroshi)
+Copyright 2004-2005 Piro(YUKI "Piro" Hiroshi)
