@@ -10,7 +10,8 @@
                    em:description="Disables tabbed browsing features of Mozilla completely."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/_tabkiller.html.en"
                    em:iconURL="chrome://tabkiller/content/icon32.png"
-                   em:optionsURL="chrome://tabkiller/content/prefDialog.xul">
+                   em:optionsURL="chrome://tabkiller/content/prefDialog.xul"
+                   em:type="2">
 	<em:translator>Jean-Bernard Marcon</em:translator>
 	<em:translator>Leszek (teo) Życzkowski</em:translator>
 	<em:translator>Mikes Kaszmán István</em:translator>
