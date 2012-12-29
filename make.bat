@@ -1,3 +1,3 @@
 copy buildscript\makexpi.sh .\
-bash makexpi.sh tabkiller version=0
+bash makexpi.sh -n tabkiller -o
 del makexpi.sh
