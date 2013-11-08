@@ -1,5 +1,8 @@
 # 更新履歴
 
+ - master/HEAD
+   * jarファイルを含めない形のパッケージングに変更
+   * 細かい修正色々（詳しくは[コミットログ](https://github.com/piroor/tabkiller/commits/master)を参照）
  - 2.0.2009110201
    * Minefield、Firefox 3.6対応
  - 2.0.2009050701

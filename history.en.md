@@ -1,5 +1,8 @@
 # History
 
+ - master/HEAD
+   * Modified: "jar" archive is no longer included.
+   * Many tiny fixes. See the [commit log](https://github.com/piroor/tabkiller/commits/master) for more information.
  - 2.0.2009110201
    * Works on Minefield and Firefox 3.6.
  - 2.0.2009050701
