@@ -27,7 +27,7 @@ var TabKiller = {
 	{
 		var tabs = aTabBrowser.ownerDocument.evaluate(
 				'descendant::*[local-name()="tab"]',
-				aTabBrowser.mTabContainer,
+				aTabBrowser.tabContainer,
 				null,
 				XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
 				null
@@ -140,11 +140,11 @@ var TabKiller = {
 		aTabBrowser.setStripVisibilityTo = function(aShow) {};
 		aTabBrowser.getStripVisibility = function() { return false; }
 
-		aTabBrowser.mTabContainer.mTabstrip.scrollByIndex = function() {}
-		aTabBrowser.mTabContainer.mTabstrip.scrollByPixels = function() {}
-		aTabBrowser.mTabContainer.mTabstrip._autorepeatbuttonScroll = function() {}
-		aTabBrowser.mTabContainer.mTabstrip._smoothScrollByPixels = function() {}
-		aTabBrowser.mTabContainer.mTabstrip._startScroll = function() {}
+		aTabBrowser.tabContainer.mTabstrip.scrollByIndex = function() {}
+		aTabBrowser.tabContainer.mTabstrip.scrollByPixels = function() {}
+		aTabBrowser.tabContainer.mTabstrip._autorepeatbuttonScroll = function() {}
+		aTabBrowser.tabContainer.mTabstrip._smoothScrollByPixels = function() {}
+		aTabBrowser.tabContainer.mTabstrip._startScroll = function() {}
 
 		aTabBrowser.__tabkiller__initialized = true;
 	},
